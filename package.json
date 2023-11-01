@@ -1,0 +1,24 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/minhtien213/nodejs_blog.git"
+  },
+  "keywords": [
+    "nodejs",
+    "node",
+    "blog"
+  ],
+  "author": "minhtien213",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/minhtien213/nodejs_blog/issues"
+  },
+  "homepage": "https://github.com/minhtien213/nodejs_blog#readme"
+}
