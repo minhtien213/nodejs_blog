@@ -1,13 +1,8 @@
 @import 'variables';
 
-h1{
+h1 {
     color: $red-color;
     font-size: 20px;
     font-style: italic;
-}
-h2{
-    color: rgb(188, 98, 19);
-    font-size: 20px;
-    font-style: italic;
-    font-weight: normal;
+    margin-top: 15px;
 }
