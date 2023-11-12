@@ -1,5 +1,5 @@
-h1 {
-  color: red;
-  font-size: 20px;
-  font-style: italic;
+.card-course-item {
   margin-top: 15px; }
+
+body {
+  background-color: #c7e0f5; }
