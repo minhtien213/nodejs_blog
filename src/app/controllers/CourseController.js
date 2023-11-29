@@ -34,9 +34,7 @@ class CoursesController {
       const course = new Course(req.body)
       course.save()
         .then(() => res.redirect('/me/stored/courses'))
-        .catch(error =>{
-          
-        })
+        .catch(next)
     }
 
     //[GET] /courses/:id/edit 
@@ -76,7 +74,7 @@ class CoursesController {
         .catch(next)
     }
 
-    //[PATCH] /courses/handle-form-actions
+    //[POST] /courses/handle-form-actions
     handleStoredFormActions(req, res, next) {
       switch(req.body.action){
         case 'delete':
@@ -97,9 +95,10 @@ class CoursesController {
             .catch(next)
           break;
         case 'deleteForce':
-          Course.deleteOne({ _id: { $in: req.body.courseIds} }) //{_id: req.params.id}: id muốn xóa
+          Course.deleteMany({ _id: { $in: req.body.courseIds} }) //{_id: req.params.id}: id muốn xóa
             .then(() => res.redirect('back')) //xóa xong chuyển lại trang trước đó
             .catch(next)
+          // res.json(req.body)
           break;
         default:
           res.json({messenger: 'error'})

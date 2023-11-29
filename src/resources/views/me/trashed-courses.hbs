@@ -13,7 +13,7 @@
       </div>
 
       <select name="action" class="form-control form-control-sm  text-center" style="margin: 0 10px; width: 160px;" required>
-        <option value="">-- chọn hành động --</option>
+        <option value="">-- Chọn hành động --</option>
         <option value="resoteAll">Khôi phục</option>
         <option value="deleteForce">Xóa vĩnh viễn</option>
       </select>
@@ -25,9 +25,18 @@
         <thead>
             <tr>
                 <th></th>
-                <th scope="col">STT</th>
-                <th scope="col">Tên khóa học</th>
-                <th scope="col">Thời gian xóa</th>
+                <th scope="col">
+                  ID
+                  {{{sortable '_id' _sort}}}
+                </th>
+                <th scope="col">
+                  Tên khóa học
+                  {{{sortable 'name' _sort}}}
+                </th>
+                <th scope="col">
+                  Thời gian xóa
+                  {{{sortable 'deletedAt' _sort}}}
+                </th>
                 <th scope="col">Tùy chọn</th>
             </tr>
         </thead>
@@ -39,12 +48,12 @@
                     <input class="form-check-input" type="checkbox" name="courseIds[]" value="{{this._id}}">
                   </div>
                 </td>
-                <th scope="row">{{sum @index 1}}</th>
+                <th scope="row">{{this._id}}</th>
                 <td>{{this.name}}</td>
                 <td>{{this.deletedAt}}</td>
                 <td>
                     <a href="" data-id="{{this._id}}" class="btn btn-link btn-restore">Khôi phục</a>
-                    <a href="" class="btn btn-link" data-id="{{this._id}}" data-bs-toggle="modal" data-bs-target="#delete-course-modal">Xóa vĩnh viễn</button>
+                    <a href="" class="btn btn-link" data-id="{{this._id}}" data-bs-toggle="modal" data-bs-target="#delete-course-modal">Xóa vĩnh viễn</a>
                 </td>
             </tr>
             {{else}}

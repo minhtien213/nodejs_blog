@@ -1,9 +1,10 @@
-const path = require('path');
-const express = require('express');
-const morgan = require('morgan');
+const path = require('path')
+const express = require('express')
+const morgan = require('morgan')
 const methodOverride = require('method-override')
 // const handlebars = require('express-handlebars')
-const { engine } = require('express-handlebars');
+const { engine } = require('express-handlebars')
+const sortMiddlewares = require('./app/middlewares/SortMiddlewares')
 
 const routes = require('./routes'); //nạp function routes xuất từ file routes/index.js
 const db = require('./config/db');
@@ -24,6 +25,9 @@ app.use(express.json()); //xử lí DL từ form submit(qua các thư viện JS,
 
 app.use(methodOverride('_method')) //thư viện đổi method(đổi POST -> PUT khi update...)
 
+// custom middlewares
+app.use(sortMiddlewares)
+
 // HTTP loger
 app.use(morgan('combined'));
 
@@ -33,9 +37,7 @@ app.engine(
     engine({
         //định nghĩa hbs
         extname: '.hbs', //đổi đuôi handlebars thành .hbs
-        helpers: {
-            sum: (a, b) => a + b,
-        }
+        helpers: require('./helpers/handlebars')
     }),
 );
 app.set('view engine', 'hbs'); //sử dụng view engine hbs

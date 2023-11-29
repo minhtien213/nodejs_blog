@@ -5,9 +5,9 @@ const { mutipleMongooseToObject } = require("../../util/mongoose")
 
 class SiteController {
 
-    index(req, res) {
-      res.render('home');
-    }
+    // index(req, res) {
+    //   res.render('home');
+    // }
 
     search(req, res) {
         res.render('search');
