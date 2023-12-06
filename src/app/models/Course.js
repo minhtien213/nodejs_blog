@@ -19,6 +19,8 @@ const CourseSchema = new Schema({
     timestamps: true // tự động thêm time tạo / sửa
 });
 
+CourseSchema.cre
+
 //custom query helpers
     //tạo phương thức sort 
     CourseSchema.query.sortable = function(req){

@@ -4,7 +4,7 @@ const morgan = require('morgan')
 const methodOverride = require('method-override')
 // const handlebars = require('express-handlebars')
 const { engine } = require('express-handlebars')
-const sortMiddlewares = require('./app/middlewares/SortMiddlewares')
+const sortMiddlewares = require('./app/middlewares/sortMiddlewares')
 
 const routes = require('./routes'); //nạp function routes xuất từ file routes/index.js
 const db = require('./config/db');
@@ -42,6 +42,7 @@ app.engine(
 );
 app.set('view engine', 'hbs'); //sử dụng view engine hbs
 app.set('views', path.join(__dirname, 'resources', 'views')); //set lại path đến view engine
+
 
 // routes init
 routes(app);

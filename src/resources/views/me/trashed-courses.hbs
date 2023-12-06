@@ -66,6 +66,23 @@
             {{/each}}
         </tbody>
     </table>
+
+    <div id="pagination">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item">
+            {{{sub currentPage totalPage}}}
+          </li>
+          
+          {{{pagination totalPage}}}
+
+          <li class="page-item">
+            {{{sum currentPage totalPage}}}
+          </li>
+        </ul>
+      </nav>
+    </div>
+    
 </form>
 
 
