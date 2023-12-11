@@ -6,7 +6,8 @@ const mongooseDelete = require('mongoose-delete')
                 //tạo thùng rác khi xóa(khi tạo mới document thì sẽ tự thêm deleted: false)
                 //khi xóa mềm sẽ là deleted: true
 const AutoIncrement = require('mongoose-sequence')(mongoose);
-
+                //tự tăng id khi create
+                
 const CourseSchema = new Schema({
     _id: { type: Number, },
     name: { type: String, required: true},
@@ -19,7 +20,6 @@ const CourseSchema = new Schema({
     timestamps: true // tự động thêm time tạo / sửa
 });
 
-CourseSchema.cre
 
 //custom query helpers
     //tạo phương thức sort 

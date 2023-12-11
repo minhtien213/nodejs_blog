@@ -12,10 +12,12 @@
 
     <div class="app">
         {{> header}}
+        
         <div class="container">
             {{{body}}} 
             {{!-- đưa res.render('home') - file được render*home, news...) vào body --}}
         </div>
+        
         {{> footer}}
     </div>
     {{!-- 3 link để bootstrap hoạt động được với JS --}}

@@ -126,7 +126,7 @@
         if (deleteCourseModal) {
             deleteCourseModal.addEventListener('show.bs.modal', function(event) {
                 // Button that triggered the modal
-                const btnDelete = event.relatedTarget
+                btnDelete = event.relatedTarget
                 // Extract info from data-bs-* attributes
                 courseId = btnDelete.getAttribute('data-id')
             })

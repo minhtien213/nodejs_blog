@@ -1,4 +1,4 @@
-function handlePagination(req, pageSize) {
+function paginationMiddlewares(req, pageSize) {
   let pageNumber = req.query.page ? parseInt(req.query.page) : 1;
   let currentPage = pageNumber;
   let skipPage = (pageNumber - 1) * pageSize;
@@ -16,4 +16,4 @@ function handlePagination(req, pageSize) {
   };
 }
 
-module.exports = handlePagination;
+module.exports = paginationMiddlewares;

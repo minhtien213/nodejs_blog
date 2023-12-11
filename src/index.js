@@ -4,6 +4,8 @@ const morgan = require('morgan')
 const methodOverride = require('method-override')
 // const handlebars = require('express-handlebars')
 const { engine } = require('express-handlebars')
+const cookieParser = require('cookie-parser');
+
 const sortMiddlewares = require('./app/middlewares/sortMiddlewares')
 
 const routes = require('./routes'); //nạp function routes xuất từ file routes/index.js
@@ -25,8 +27,10 @@ app.use(express.json()); //xử lí DL từ form submit(qua các thư viện JS,
 
 app.use(methodOverride('_method')) //thư viện đổi method(đổi POST -> PUT khi update...)
 
-// custom middlewares
+// Sử dụng Sort middlewares
 app.use(sortMiddlewares)
+// Sử dụng cookie-parser middleware
+app.use(cookieParser())
 
 // HTTP loger
 app.use(morgan('combined'));

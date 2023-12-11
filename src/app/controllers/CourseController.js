@@ -2,19 +2,11 @@
 
 const Course = require("../models/Course");
 const { mongooseToObject } = require("../../util/mongoose");
-const { mutipleMongooseToObject } = require("../../util/mongoose");
-const { request } = require("express");
+// const { request } = require("express");
+const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
 
 class CoursesController {
 
-    //lists of Courses
-    courses(req, res, next) {
-      Course.find({})
-        .then(courses => {
-          res.render('courses', {courses: mutipleMongooseToObject(courses)})
-        })
-        .catch(next)
-    }
 
     //[GET] /courses/:slug
     show(req, res, next) {
@@ -25,7 +17,9 @@ class CoursesController {
 
     //[GET] /courses/create 
     create(req, res, next) {
-      res.render('courses/create')
+      checkLoginMiddlewares(req, res, [0], (username) => {
+        res.render('courses/create' , {username});
+      })
     }
 
     //[POST] /courses/store

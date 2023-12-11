@@ -2,7 +2,7 @@ const Handlebars = require('handlebars')
 
 module.exports = {
     sub: (currentPage, totalPage) => {
-        if(totalPage === 0) {
+        if(totalPage === 0 || totalPage === 1) {
             return ''
         }
         currentPage--
@@ -13,8 +13,7 @@ module.exports = {
                 </a>`
     },
     sum: (currentPage, totalPage) => {
-        if(totalPage === 0) {
-            // totalPage = 1
+        if(totalPage === 0 || totalPage === 1) {
             return ''
         }
         currentPage++
@@ -49,11 +48,14 @@ module.exports = {
     },
 
     pagination: function(totalPage) {
+        if(totalPage <= 1){
+            return ''
+        }
         let paginationHTML = '';
         for (let i = 1; i <= totalPage; i++) {
             paginationHTML += `<li class="page-item"><a class="page-link" href="?_pagi&page=${i}">${i}</a></li>`;
         }
         return paginationHTML;
-    }
+    },
     
 }

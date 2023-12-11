@@ -1,0 +1,59 @@
+<style>
+    .custom-container {
+      max-width: 500px; 
+      margin: auto; 
+    }
+</style>
+
+
+<div class="custom-container">
+    <form method="POST" action="/auth/register">
+        <h2 class="text-center">Register</h2>
+        <!-- Username input -->
+        <div class="form-outline mb-4 mt-4">
+            <label class="form-label" for="name">Name:</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="insert name..."/>
+        </div>
+        <!-- Username input -->
+        <div class="form-outline mb-4 mt-4">
+            <label class="form-label" for="username">Username:</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="insert username..."/>
+        </div>
+
+        <!-- Password input -->
+        <div class="form-outline mb-4">
+            <label class="form-label" for="password">Password:</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="insert password..."/>
+        </div>
+
+        <!-- Password confirm input -->
+        <div class="form-outline mb-4">
+            <label class="form-label" for="password-confirm">Password confirm:</label>
+            <input type="password" id="password-confirm" name="password-confirm" class="form-control" placeholder="insert password..."/>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block mb-4">Đăng kí</button>
+
+        <!-- Register buttons -->
+        <div class="text-center">
+            <p>Is a member? <a href="login">Login</a></p>
+            <p>or sign up with:</p>
+            <button type="button" class="btn btn-link btn-floating mx-1">
+            <i class="fab fa-facebook-f"></i>
+            </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+            <i class="fab fa-google"></i>
+            </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+            <i class="fab fa-twitter"></i>
+            </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+            <i class="fab fa-github"></i>
+            </button>
+        </div>
+    </form>
+</div>
