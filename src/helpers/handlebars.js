@@ -1,7 +1,8 @@
 const Handlebars = require('handlebars')
 
 module.exports = {
-    sub: (currentPage, totalPage) => {
+    stt: (a, b) => a + b,
+    previousPage: (currentPage, totalPage) => {
         if(totalPage === 0 || totalPage === 1) {
             return ''
         }
@@ -12,7 +13,7 @@ module.exports = {
                     <span class="sr-only">Previous</span>
                 </a>`
     },
-    sum: (currentPage, totalPage) => {
+    nextPage: (currentPage, totalPage) => {
         if(totalPage === 0 || totalPage === 1) {
             return ''
         }
@@ -24,7 +25,7 @@ module.exports = {
                 </a>`
     },
     sortable: (field, sort) => {
-        const sortType = field === sort.column ? sort.type : 'default';
+        const sortType = field === sort.column ? sort.type : 'default'
         const icons = {
             default: 'fa-solid fa-sort',
             asc: 'fa-solid fa-arrow-up-wide-short',
@@ -51,11 +52,17 @@ module.exports = {
         if(totalPage <= 1){
             return ''
         }
-        let paginationHTML = '';
+        let paginationHTML = ''
         for (let i = 1; i <= totalPage; i++) {
-            paginationHTML += `<li class="page-item"><a class="page-link" href="?_pagi&page=${i}">${i}</a></li>`;
+            paginationHTML += `<li class="page-item"><a class="page-link" href="?_pagi&page=${i}">${i}</a></li>`
         }
-        return paginationHTML;
+        return paginationHTML
     },
+
+    loadmore: function(keySearch, resultSize, coursesCount) {
+        resultSize += 1
+        resultSize = resultSize > coursesCount ? coursesCount : resultSize
+        return `<a href="/search-results?keysearch=${keySearch}&result=${resultSize}" class="btn btn-primary mt-4">Load more...</a>`
+    }
     
 }

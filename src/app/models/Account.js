@@ -10,6 +10,11 @@ const AccountSchema = new Schema({
     username: { type: String, required: true},
     password: { type: String, required: true},
     name: { type: String, required: true},
+    cart: [{
+        courses: { type: Schema.Types.ObjectId, ref: 'Courses' },
+        quantity: { type: Number},
+        addedAt: { type: Date, default: Date.now },
+      }], 
     image: { type: String},
     role: { type: Number, default: 1 },
     slug: { type: String, slug: "name"}

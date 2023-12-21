@@ -1,12 +1,12 @@
-// các tuyến đường liên quan đến News thì tạo phương thức ở class này
 
-const Course = require("../models/Course");
-const { mongooseToObject } = require("../../util/mongoose");
-// const { request } = require("express");
+
+const Course = require("../models/Course")
+const { mongooseToObject } = require("../../util/mongoose")
 const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
+const multerMiddleware = require('../middlewares/imageUploadHandleMiddlewares')
+
 
 class CoursesController {
-
 
     //[GET] /courses/:slug
     show(req, res, next) {
@@ -17,33 +17,52 @@ class CoursesController {
 
     //[GET] /courses/create 
     create(req, res, next) {
-      checkLoginMiddlewares(req, res, [0], (username) => {
-        res.render('courses/create' , {username});
+      checkLoginMiddlewares(req, res, [0], (account) => {
+        res.render('courses/create' , { account: mongooseToObject(account)})
       })
     }
 
-    //[POST] /courses/store
+    // [POST] /courses/store
     store(req, res, next) {
-      req.body.image = `https://img.youtube.com/vi/${req.body.videoId}/sddefault.jpg`
-      const course = new Course(req.body)
-      course.save()
-        .then(() => res.redirect('/me/stored/courses'))
-        .catch(next)
+      // Sử dụng Multer Middleware để xử lý tệp ảnh (nếu có)
+      multerMiddleware(req, res, () => {
+        // Nếu có file đã tải lên, sử dụng đường dẫn từ req.file
+        if (req.file) {
+          req.body.image = req.file.path.replace(/\\/g, '/').replace('src/public', '..')
+        }
+        const course = new Course(req.body)
+        course.save()
+          .then(() => res.redirect('/me/stored/courses'))
+          .catch(next)
+      })
     }
 
     //[GET] /courses/:id/edit 
     edit(req, res, next) {
-      Course.findById(req.params.id)
-        .then(course => res.render('courses/edit', {course: mongooseToObject(course)}))
-        .catch(next)
+      checkLoginMiddlewares(req, res, [0], (account) => {
+        Course.findById(req.params.id)
+          .then(course => res.render('courses/edit', {
+            course: mongooseToObject(course),
+            account: mongooseToObject(account),
+          }))
+          .catch(next)
+      })
     }
 
     //[PUT] /courses/:id
     update(req, res, next) {
-      req.body.image = `https://img.youtube.com/vi/${req.body.videoId}/sddefault.jpg`
-      Course.updateOne( {_id: req.params.id}, req.body) //{_id: req.params.id}: id chỉnh sửa, req.body: object muốn sửa
+      
+
+      // Sử dụng Multer Middleware để xử lý tệp ảnh (nếu có)
+      multerMiddleware(req, res, () => {
+        // Nếu có file đã tải lên, sử dụng đường dẫn từ req.file
+        if (req.file) {
+          req.body.image = req.file.path.replace(/\\/g, '/').replace('src/public', '..')
+        }
+        Course.updateOne( {_id: req.params.id}, req.body) //{_id: req.params.id}: id chỉnh sửa, req.body: object muốn sửa
         .then(() => res.redirect('/me/stored/courses'))
         .catch(next)
+      })
     }
 
 
@@ -75,7 +94,7 @@ class CoursesController {
           Course.delete({ _id: { $in: req.body.courseIds} }) //{_id: req.params.id}: id muốn xóa
             .then(() => res.redirect('back')) //xóa xong chuyển lại trang trước đó
             .catch(next)
-          break;
+          break
         default:
           res.json({messenger: 'error'})
       }
@@ -87,13 +106,13 @@ class CoursesController {
           Course.restore({ _id: { $in: req.body.courseIds} }) //{_id: req.params.id}: id muốn xóa
             .then(() => res.redirect('back')) //xóa xong chuyển lại trang trước đó
             .catch(next)
-          break;
+          break
         case 'deleteForce':
           Course.deleteMany({ _id: { $in: req.body.courseIds} }) //{_id: req.params.id}: id muốn xóa
             .then(() => res.redirect('back')) //xóa xong chuyển lại trang trước đó
             .catch(next)
           // res.json(req.body)
-          break;
+          break
         default:
           res.json({messenger: 'error'})
       }
@@ -101,7 +120,7 @@ class CoursesController {
 
 }
 
-module.exports = new CoursesController();
+module.exports = new CoursesController()
 
 
 // Models.phương thức({điều kiện để phương thức làm việc})

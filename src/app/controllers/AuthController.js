@@ -1,17 +1,26 @@
 
-const Account = require("../models/Account");
-const jwt = require('jsonwebtoken');
+const Account = require("../models/Account")
+const jwt = require('jsonwebtoken')
+const checkUser = require('../middlewares/checkUser')
 
 class AuthController {
 
   // [GET] /auth/login
   login(req, res, next) {
-      res.render('auth/login');
+    checkUser(req, res)
+      .then(username => {
+          res.render('auth/login', {username})
+      })
+      .catch(next)
   }
 
   // [GET] /auth/register
   register(req, res, next) {
-    res.render('auth/register');
+    checkUser(req, res)
+      .then(username => {
+          res.render('auth/register', {username})
+      })
+      .catch(next)
   }
 
   // [POST] /auth/login
@@ -21,17 +30,15 @@ class AuthController {
     Account.findOne({ username: username, password: password})
       .then((account) => {
         if(account){
-          const username = account.username
           const token = jwt.sign({ _id: account._id }, 'minhtien213')
           res.cookie('token', token)
-          res.cookie('username', username)
 
-          const previousPath = req.cookies.previousPath || '/'; //lấy đường dẫn trước đó trong cookie nếu không có thì chuyển về trang "/" - trang home
-          res.clearCookie('previousPath'); // Xóa cookie sau khi sử dụng
+          const previousPath = req.cookies.previousPath || '/' //lấy đường dẫn trước đó trong cookie nếu không có thì chuyển về trang "/" - trang home
+          res.clearCookie('previousPath') // Xóa cookie sau khi sử dụng
           
-          res.redirect(previousPath); //chuyển hướng theo đường dẫn trước(trang yêu cầu phải login)
+          res.redirect(previousPath) //chuyển hướng theo đường dẫn trước(trang yêu cầu phải login)
         }else{
-          res.redirect('back');
+          res.redirect('back')
         }
       })
       .catch(next)
@@ -40,8 +47,8 @@ class AuthController {
   // [GET] /auth/logout
   logoutHandle(req, res, next){
     // Xóa cookie có tên là "token" khi đăng xuất
-    res.clearCookie('token');
-    res.redirect('/auth/login');
+    res.clearCookie('token')
+    res.redirect('/auth/login')
   }
 
   // [POST] /auth/register
@@ -56,4 +63,4 @@ class AuthController {
 
 }
 
-module.exports = new AuthController();
+module.exports = new AuthController()

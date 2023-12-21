@@ -19,4 +19,21 @@
             </div>
         {{/each}}
     </div>
+
+    <div id="pagination" class="d-flex align-items-center justify-content-center mt-4">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item">
+            {{{previousPage currentPage totalPage}}}
+          </li>
+          
+          {{{pagination totalPage}}}
+
+          <li class="page-item">
+            {{{nextPage currentPage totalPage}}}
+          </li>
+        </ul>
+      </nav>
+    </div>
+
 </div>

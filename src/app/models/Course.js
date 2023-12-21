@@ -5,20 +5,15 @@ const slug = require('mongoose-slug-updater') //tự động tạo slug
 const mongooseDelete = require('mongoose-delete') 
                 //tạo thùng rác khi xóa(khi tạo mới document thì sẽ tự thêm deleted: false)
                 //khi xóa mềm sẽ là deleted: true
-const AutoIncrement = require('mongoose-sequence')(mongoose);
-                //tự tăng id khi create
                 
 const CourseSchema = new Schema({
-    _id: { type: Number, },
-    name: { type: String, required: true},
+    name: { type: String, require: true},
     description: { type: String},
-    videoId: { type: String, required: true},
-    image: { type: String},
+    image: { type: String, require: true},
     slug: { type: String, slug: "name", unique: true } // unique: true: tự động tạo slug khi đặt trùng name
 }, {
-    _id: false, //ngăn mongoo tự tạo _id
     timestamps: true // tự động thêm time tạo / sửa
-});
+})
 
 
 //custom query helpers
@@ -36,7 +31,6 @@ const CourseSchema = new Schema({
 
 
 // Add plugins
-CourseSchema.plugin(AutoIncrement)
 mongoose.plugin(slug)
 CourseSchema.plugin(mongooseDelete, {
     overrideMethods: 'all',

@@ -3,7 +3,7 @@
 <form name="container-form" method="POST" action="/courses/handle-stored-form-actions" class="mt-4">
 
    <div class="d-flex align-items-center justify-content-center">
-     <h3>Khóa học của tôi</h3>
+     <h3>Khóa học của tôi</h3> <span>({{ coursesCount }})</span>
       <a href="/me/trash/courses" class="ml-auto">Thùng rác ({{deletedCount}})</a>
    </div>
 
@@ -27,8 +27,7 @@
             <tr>
                 <th></th>
                 <th scope="col">
-                  ID
-                  {{{sortable '_id' _sort}}}
+                  STT
                 </th>
                 <th scope="col">
                   Tên khóa học
@@ -43,14 +42,13 @@
         </thead>
         <tbody>
             {{#each courses}}
-            
             <tr style="border-bottom: 1px solid #dee2e6;">
                 <td>
                   <div class="form-check">
                     <input class="form-check-input" type="checkbox" name="courseIds[]" value="{{this._id}}">
                   </div>
                 </td>
-                <th scope="row">{{this._id}}</th>
+                <th scope="row">{{stt @index 1}}</th>
                 <td>{{this.name}}</td>
                 <td>{{this.createdAt}}</td>
                 <td>
@@ -69,17 +67,17 @@
         </tbody>
     </table>
     
-    <div id="pagination">
+    <div id="pagination" class="d-flex align-items-center justify-content-center">
       <nav aria-label="Page navigation example">
         <ul class="pagination">
           <li class="page-item">
-            {{{sub currentPage totalPage}}}
+            {{{previousPage currentPage totalPage}}}
           </li>
           
           {{{pagination totalPage}}}
 
           <li class="page-item">
-            {{{sum currentPage totalPage}}}
+            {{{nextPage currentPage totalPage}}}
           </li>
         </ul>
       </nav>
