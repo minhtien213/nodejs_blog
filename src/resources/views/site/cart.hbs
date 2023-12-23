@@ -1,0 +1,44 @@
+<div class="container mt-4">
+    <div class="row">
+        {{#each accountWithCart}}
+            <div class="col-sm-6 col-lg-4">
+                <div class="card card-course-item">
+                    <a href="/courses/{{this.courses.slug}}">
+                        <img src="{{this.courses.image}}" class="card-img-top" alt="{{this.courses.name}}">
+                    </a>
+                    <div class="card-body">
+                        <a href="#">
+                            <h5 class="card-title">{{this.courses.name}}</h5>
+                        </a>
+                        <p class="card-text">{{this.courses.description}}</p>
+                        <button type="submit" id="remove_cart" class="btn btn-primary" data-course-id="{{this.courses._id}}">Remove cart</button>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+
+    {{!-- tạo form hidden để thực hiện submit --}}
+    <form id="remove-to-cart-form" method="POST"></form>
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(e) {
+
+    const remove_cartsBtn = document.querySelectorAll('#remove_cart')
+    if(remove_cartsBtn){
+      remove_cartsBtn.forEach(function(remove_cartBtn){
+        remove_cartBtn.addEventListener('click', function (e) {
+          e.preventDefault()
+          const courseId = remove_cartBtn.getAttribute('data-course-id')
+          const remove_to_cart_form = document.querySelector('#remove-to-cart-form')
+          remove_to_cart_form.action = '/cart/' + courseId + '?_method=DELETE'
+          remove_to_cart_form.submit()
+        })
+      })
+    }
+
+  })
+  
+</script>

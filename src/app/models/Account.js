@@ -11,16 +11,16 @@ const AccountSchema = new Schema({
     password: { type: String, required: true},
     name: { type: String, required: true},
     cart: [{
-        courses: { type: Schema.Types.ObjectId, ref: 'Courses' },
-        quantity: { type: Number},
-        addedAt: { type: Date, default: Date.now },
+        courses: { type: Schema.Types.ObjectId, ref: 'Course' },
+        // quantity: { type: Number},
+        addedAt: { type: Date },
       }], 
     image: { type: String},
     role: { type: Number, default: 1 },
     slug: { type: String, slug: "name"}
 }, {
     timestamps: true // tự động thêm time tạo / sửa
-});
+})
 
 
 // Add plugins

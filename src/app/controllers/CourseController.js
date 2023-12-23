@@ -4,15 +4,23 @@ const Course = require("../models/Course")
 const { mongooseToObject } = require("../../util/mongoose")
 const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
 const multerMiddleware = require('../middlewares/imageUploadHandleMiddlewares')
+const checkUser = require('../middlewares/checkUser')
 
 
 class CoursesController {
 
     //[GET] /courses/:slug
     show(req, res, next) {
-      Course.findOne({slug: req.params.slug})
-        .then(course => res.render('courses/show', {course: mongooseToObject(course)}))
-        .catch(next)
+      checkUser(req, res)
+        .then(account => {
+          Course.findOne({slug: req.params.slug})
+          .then(course => res.render('courses/show', {
+            course: mongooseToObject(course),
+            account: mongooseToObject(account)
+          }))
+          .catch(next)
+        })
+        .catch(next);
     }
 
     //[GET] /courses/create 
@@ -51,8 +59,6 @@ class CoursesController {
 
     //[PUT] /courses/:id
     update(req, res, next) {
-      
-
       // Sử dụng Multer Middleware để xử lý tệp ảnh (nếu có)
       multerMiddleware(req, res, () => {
         // Nếu có file đã tải lên, sử dụng đường dẫn từ req.file

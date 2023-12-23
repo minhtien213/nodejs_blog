@@ -5,6 +5,8 @@ const Account = require("../models/Account")
 const { mutipleMongooseToObject, mongooseToObject } = require("../../util/mongoose")
 const paginationMiddlewares = require('../middlewares/paginationMiddlewares')
 const checkUser = require('../middlewares/checkUser')
+const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
+
 
 class SiteController {
 
@@ -17,7 +19,7 @@ class SiteController {
                 Course.countDocuments({}),
               ])
                   .then(([courses, coursesCount]) => {
-                    res.render('home', {
+                    res.render('site/home', {
                       courses: mutipleMongooseToObject(courses),
                       totalPage: Math.ceil(coursesCount / 3),
                       currentPage,
@@ -55,7 +57,7 @@ class SiteController {
                 Course.countDocuments({ name: { $regex: regex } }),
               ])
                 .then(([courses, coursesCount]) => {
-                  res.render('search', {
+                  res.render('site/search', {
                     courses: mutipleMongooseToObject(courses),
                     coursesCount,
                     keySearch,
@@ -71,9 +73,10 @@ class SiteController {
         .catch(next)
     }
 
+
     //[GET] /error
     error(req, res, next) {
-      res.render('error');
+      res.render('site/error');
     }
 
 }

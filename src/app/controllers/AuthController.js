@@ -1,15 +1,18 @@
 
+require('dotenv').config()
 const Account = require("../models/Account")
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const checkUser = require('../middlewares/checkUser')
+const { mongooseToObject } = require('../../util/mongoose')
 
 class AuthController {
 
   // [GET] /auth/login
   login(req, res, next) {
     checkUser(req, res)
-      .then(username => {
-          res.render('auth/login', {username})
+      .then(account => {
+          res.render('auth/login', {account: mongooseToObject(account)})
       })
       .catch(next)
   }
@@ -27,11 +30,13 @@ class AuthController {
   loginHandle(req, res, next) {
     var username = req.body.username
     var password = req.body.password
-    Account.findOne({ username: username, password: password})
+    Account.findOne({ username: username})
       .then((account) => {
-        if(account){
-          const token = jwt.sign({ _id: account._id }, 'minhtien213')
-          res.cookie('token', token)
+        if(account && bcrypt.compareSync(password, account.password)){
+          // Sử dụng biến môi trường thay cho secretKey tực tiếp
+          const secretKey = process.env.JWT_SECRET || 'minhtien'
+          const token = jwt.sign({ _id: account._id }, secretKey, { algorithm: 'HS256' }) //{ algorithm: 'HS256' } - thuật toán tạo token
+          res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 900000 }) //hạn sống token 15p
 
           const previousPath = req.cookies.previousPath || '/' //lấy đường dẫn trước đó trong cookie nếu không có thì chuyển về trang "/" - trang home
           res.clearCookie('previousPath') // Xóa cookie sau khi sử dụng
@@ -52,13 +57,24 @@ class AuthController {
   }
 
   // [POST] /auth/register
-  registerHandle(req, res, next){
-    const account = new Account(req.body)
-    account.save()
-    .then(() => {
+  async registerHandle (req, res, next){
+    try {
+      // Hash mật khẩu trước khi lưu vào cơ sở dữ liệu
+      const hashedPassword = await bcrypt.hash(req.body.password, 10)
+  
+      // Tạo tài khoản mới với mật khẩu đã hash
+      const account = new Account({
+        ...req.body,
+        password: hashedPassword
+      })
+  
+      // Lưu tài khoản vào cơ sở dữ liệu
+      await account.save()
+  
       res.redirect('/auth/login')
-    })
-    .catch(next)
+    } catch (error) {
+      next(error)
+    }
   }
 
 }

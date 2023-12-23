@@ -6,11 +6,11 @@ function checkLoginMiddlewares(req, res, allowedListRoles , next) { //next: nh·∫
  
     const token = req.cookies.token
       if (token) {
-        const result = jwt.verify(token, 'minhtien213')
+        const secretKey = process.env.JWT_SECRET || 'minhtien'
+        const result = jwt.verify(token, secretKey, { algorithm: 'HS256' })
         Account.findById({_id: result._id})
           .then(account => {
             if (account && allowedListRoles.includes(account.role)){
-              // const username = account.username
               next(account) //truy·ªÅn account qua view
             }else{
               res.redirect('/error') //thay trang ERROR

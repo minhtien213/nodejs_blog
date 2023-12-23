@@ -1,5 +1,6 @@
-const path = require('path') //xử lí đường dẫn
+
 const express = require('express')
+const path = require('path') //xử lí đường dẫn
 const morgan = require('morgan') //xem log request
 const methodOverride = require('method-override') //ghi đè method
 // const handlebars = require('express-handlebars')
