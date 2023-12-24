@@ -7,13 +7,13 @@ const mongooseDelete = require('mongoose-delete')
                 //khi xóa mềm sẽ là deleted: true
 
 const AccountSchema = new Schema({
-    username: { type: String, required: true},
+    username: { type: String, required: true,  unique: true },
     password: { type: String, required: true},
     name: { type: String, required: true},
     cart: [{
         courses: { type: Schema.Types.ObjectId, ref: 'Course' },
         // quantity: { type: Number},
-        addedAt: { type: Date },
+        addedAt: { type: String },
       }], 
     image: { type: String},
     role: { type: Number, default: 1 },

@@ -1,38 +1,24 @@
-<style>
-    .custom-container {
-      max-width: 500px; 
-      margin: auto; 
-    }
-</style>
 
-<div class="custom-container">
-    <form method="POST" action="/auth/login">
+
+    <form method="POST" action="/auth/login" style="max-width: 540px; margin: auto;">
         <h2 class="text-center">Login</h2>
         <!-- Username input -->
         <div class="form-outline mb-4 mt-4">
             <label class="form-label" for="username">Username:</label>
-            <input type="text" id="username" name="username" class="form-control" placeholder="insert username..."/>
+            <input type="text" id="username" name="username" class="form-control" required placeholder="insert username..."/>
         </div>
 
         <!-- Password input -->
         <div class="form-outline mb-4">
             <label class="form-label" for="password">Password:</label>
-            <input type="password" id="password" name="password" class="form-control" placeholder="insert password..."/>
+            <input type="password" id="password" name="password" class="form-control" required placeholder="insert password..."/>
         </div>
 
         <!-- 2 column grid layout for inline styling -->
-        <div class="row mb-4">
-            <div class="col d-flex justify-content-center">
-            <!-- Checkbox -->
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="checkbox" checked />
-                <label class="form-check-label" for="checkbox"> Remember me </label>
-            </div>
-            </div>
-
+        <div class="row mb-4 text-center">
             <div class="col">
             <!-- Simple link -->
-            <a href="#!">Forgot password?</a>
+            <a href="/auth/reset-password">Forgot password?</a>
             </div>
         </div>
 
@@ -42,22 +28,5 @@
         <!-- Register buttons -->
         <div class="text-center">
             <p>Not a member? <a href="register">Register</a></p>
-            <p>or sign up with:</p>
-            <button type="button" class="btn btn-link btn-floating mx-1">
-            <i class="fab fa-facebook-f"></i>
-            </button>
-
-            <button type="button" class="btn btn-link btn-floating mx-1">
-            <i class="fab fa-google"></i>
-            </button>
-
-            <button type="button" class="btn btn-link btn-floating mx-1">
-            <i class="fab fa-twitter"></i>
-            </button>
-
-            <button type="button" class="btn btn-link btn-floating mx-1">
-            <i class="fab fa-github"></i>
-            </button>
         </div>
     </form>
-</div>

@@ -1,27 +1,37 @@
-<div class="container mt-4">
+
     <div class="row">
-        {{#each accountWithCart}}
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-course-item">
-                    <a href="/courses/{{this.courses.slug}}">
-                        <img src="{{this.courses.image}}" class="card-img-top" alt="{{this.courses.name}}">
-                    </a>
-                    <div class="card-body">
-                        <a href="#">
-                            <h5 class="card-title">{{this.courses.name}}</h5>
-                        </a>
-                        <p class="card-text">{{this.courses.description}}</p>
-                        <button type="submit" id="remove_cart" class="btn btn-primary" data-course-id="{{this.courses._id}}">Remove cart</button>
-                    </div>
+        {{#each cartItems}}
+            <div class="card mr-auto mb-4" style="max-width: 540px;">
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <a href="/courses/{{this.courses.slug}}">
+                    <img src="{{this.courses.image}}" class="img-fluid rounded-start" alt="{{this.courses.name}}">
+                  </a>
                 </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <a href="/courses/{{this.courses.slug}}">
+                      <h5 class="card-title">{{this.courses.name}}</h5>
+                    </a>
+                    <p class="card-text">{{this.courses.description}}</p>
+                    <small class="card-text"><p class="text-body-secondary">Ngày thêm: {{this.addedAt}}</p></small>
+                    <button type="submit" id="remove_cart" class="btn btn-primary" data-course-id="{{this.courses._id}}">Remove cart</button>
+                  </div>
+                </div>
+              </div>
             </div>
+        {{else}}
+
+        <div class="container text-center mt-4 err-bgr">
+          <span>Bạn chưa có gì trong giỏ hàng! </span>
+          <a href="/">Xem sản phẩm tại đây.</a>
+        </div>
         {{/each}}
     </div>
 
     {{!-- tạo form hidden để thực hiện submit --}}
     <form id="remove-to-cart-form" method="POST"></form>
 
-</div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function(e) {

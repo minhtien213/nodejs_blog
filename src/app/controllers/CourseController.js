@@ -5,18 +5,21 @@ const { mongooseToObject } = require("../../util/mongoose")
 const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
 const multerMiddleware = require('../middlewares/imageUploadHandleMiddlewares')
 const checkUser = require('../middlewares/checkUser')
+const checkCartItemCount = require('../middlewares/checkCartItemCount')
 
 
 class CoursesController {
 
     //[GET] /courses/:slug
     show(req, res, next) {
+      const cartItemCount = checkCartItemCount(req) //check cart item count
       checkUser(req, res)
         .then(account => {
           Course.findOne({slug: req.params.slug})
           .then(course => res.render('courses/show', {
             course: mongooseToObject(course),
-            account: mongooseToObject(account)
+            account: mongooseToObject(account),
+            cartItemCount
           }))
           .catch(next)
         })
@@ -25,8 +28,12 @@ class CoursesController {
 
     //[GET] /courses/create 
     create(req, res, next) {
+      const cartItemCount = checkCartItemCount(req) //check cart item count
       checkLoginMiddlewares(req, res, [0], (account) => {
-        res.render('courses/create' , { account: mongooseToObject(account)})
+        res.render('courses/create' , { 
+          account: mongooseToObject(account),
+          cartItemCount
+        })
       })
     }
 
@@ -47,11 +54,13 @@ class CoursesController {
 
     //[GET] /courses/:id/edit 
     edit(req, res, next) {
+      const cartItemCount = checkCartItemCount(req) //check cart item count
       checkLoginMiddlewares(req, res, [0], (account) => {
         Course.findById(req.params.id)
           .then(course => res.render('courses/edit', {
             course: mongooseToObject(course),
             account: mongooseToObject(account),
+            cartItemCount
           }))
           .catch(next)
       })

@@ -1,5 +1,7 @@
 // các tuyến đường liên quan đến News thì tạo phương thức ở class này
 
+const moment = require('moment')
+const mongoose = require('mongoose')
 const Course = require("../models/Course")
 const Account = require("../models/Account")
 const checkUser = require('../middlewares/checkUser')
@@ -14,9 +16,11 @@ class CartController {
       checkLoginMiddlewares(req, res, [0, 1], (account) => {
         Account.findById({ _id: account._id}).populate({ path: 'cart.courses', model: 'Course' })
           .then((accountWithCart) =>{
+            const cartItemCount = accountWithCart.cart.length
             res.render('site/cart' , { 
-              accountWithCart: mongooseToObject(accountWithCart.cart),
+              cartItems: mongooseToObject(accountWithCart.cart),
               account: mongooseToObject(account),
+              cartItemCount,
             })
           })
       })
@@ -29,14 +33,21 @@ class CartController {
         // Tạo một đối tượng mới để thêm vào cart
         const courseId = req.params.id
         const cartItem = {
-          courses: courseId,
-          addedAt: new Date(),
+          courses: mongoose.Types.ObjectId(courseId),
+          addedAt: moment().format('DD/MM/YYYY'),
         }
         Account.findOneAndUpdate(
           { _id: account._id, "cart.courses": { $ne: courseId }}, // Không tồn tại courseId trong cart.courses
-          { $addToSet: { cart: cartItem } }
+          { $addToSet: { cart: cartItem } },
+          { new: true } // Trả về document sau khi cập nhật
         )
-          .then(() => res.redirect('back'))
+          .then((accountWithCart) => {
+            if(accountWithCart){
+              const cartItemCount = accountWithCart.cart.length
+              res.cookie('cartItemCount', cartItemCount, { httpOnly: true, secure: true, maxAge: 900000 })
+            } //nếu cartItem chưa có trong mảng cart của user
+            res.redirect('back')
+          })
           .catch(next)
       })
     }
@@ -46,12 +57,19 @@ class CartController {
       checkLoginMiddlewares(req, res, [0, 1], (account) => {
         const courseIdToRemove = req.params.id;
 
-        Account.updateOne(
+        Account.findOneAndUpdate(
           { _id: account._id },
-          { $pull: { cart: { courses: courseIdToRemove } } }
+          { $pull: { cart: { courses: courseIdToRemove } } },
+          { new: true } // Trả về tài liệu sau khi cập nhật
         )
-        .then(() => res.redirect('back'))
-        .catch(next);
+        .then((accountWithCart) => {
+          if(accountWithCart){
+            const cartItemCount = accountWithCart.cart.length
+            res.cookie('cartItemCount', cartItemCount, { httpOnly: true, secure: true, maxAge: 900000 })
+          } //nếu cartItem chưa có trong mảng cart của user
+          res.redirect('back')
+        })
+        .catch(next)
       })
     }
 

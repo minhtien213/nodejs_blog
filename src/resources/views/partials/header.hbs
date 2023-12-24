@@ -1,13 +1,49 @@
+<style>
+  #search-inpu{
+    position: relative;
+  }
+  .search_results_block{
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+    padding: 10px;
+    display: none;
+  }
+</style>
 
 
-<nav class="navbar navbar-expand-lg bg-dark fixed-menu">
-  <div class="container">
-    <a class="navbar-brand" href="/">Home</a>
+  <nav class=" navbar navbar-expand-md navbar-expand-sm bg-dark fixed-menu fixed-top">
+    <a class="navbar-brand ml-4" href="/">Home</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+    
+    <div class="input-group mr-4 ml-4">
+      <input id="search-input" type="search" class="form-control rounded" placeholder="search..." aria-label="Search" aria-describedby="search-addon" />
+      <button id="search-btn" type="button" class="btn btn-primary ml-2" disabled>Search</button>
+     <div class="search_results_block" style="margin-top: 56px ;" >
+        {{!-- render result --}}
+      </div>
+    </div>
+
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav ml-auto">
+        <div>
+          {{#if account}}
+            <a style="position: relative; " href="/cart/{{account._id}}">
+              <i style="color: aliceblue; font-size: 40px; margin: auto 15px" class="fa-solid fa-cart-shopping"></i>
+              <span style="position: absolute; top: -18px; right: 30px">{{cartItemCount}}</span>
+            </a>
+          {{else}}
+            <a style="position: relative; " href="/error/errorCart">
+              <i style="color: aliceblue; font-size: 40px; margin: auto 15px" class="fa-solid fa-cart-shopping"></i>
+            </a>
+          {{/if}}
+        </div>
+      <ul class="navbar-nav mr-4">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" id="profile" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {{#if account}}
@@ -22,42 +58,59 @@
               <hr class="dropdown-divider">
               <a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>
               <hr class="dropdown-divider">
-              <a class="dropdown-item" href="/auth/login">Đăng nhập</a>
-              <a class="dropdown-item" href="/auth/logout">Đăng xuất</a>
-          </div>
 
+              {{#if account}}
+                <a class="dropdown-item" href="/auth/login" hidden >Đăng nhập</a>
+              {{else}}
+                <a class="dropdown-item" href="/auth/login" >Đăng nhập</a>
+              {{/if}}
+              
+              {{#if account}}
+                <a class="dropdown-item" href="/auth/logout">Đăng xuất</a>
+              {{else}}
+                <a class="dropdown-item" href="/auth/logout" hidden >Đăng xuất</a>
+              {{/if}}
+              
+          </div>
         </li>
-        <div class="input-group">
-          <input id="search-input" type="search" class="form-control rounded" placeholder="search..." aria-label="Search" aria-describedby="search-addon" />
-          <a><button id="search-btn" type="button" class="btn btn-primary" disabled>Search</button></a>
-        </div>
-        <div>
-          <a href="/cart/{{account._id}}"><i style="color: aliceblue; font-size: 40px; margin: auto 15px" class="fa-solid fa-cart-shopping"></i></a>
-        </div>
       </ul>
     </div>
-  </div>
-</nav>
+  </nav>
 
+
+ 
 <script>
   document.addEventListener("DOMContentLoaded", function(){
     const searchInput = document.querySelector("#search-input")
     const searchBtn = document.querySelector("#search-btn")
-
+    const search_results_block = document.querySelector(".search_results_block")
     
 
     searchInput.addEventListener("input", function(e) {
       const searchValue = encodeURIComponent(e.target.value.trim().toLowerCase())
       if(searchValue && searchValue != ''){
+        search_results_block.style.display = 'block'
         searchBtn.disabled = false
         const url = `/search?keysearch=${searchValue}`
         fetch(url)
           .then(response => {return response.json()})
-          .then(data => {
-            console.log(data)
+          .then(datas => {
+            console.log(datas)
+            search_results_block.innerHTML = ''
+            var htmls = datas.map(function(item){
+              return `<a href="/courses/${item.slug}">
+                        <div class="card-body">
+                          <h5 class="card-title">${item.name}</h5>
+                          <p class="card-text">${item.description}</p>
+                        </div>
+                      </a>`
+            })
+            search_results_block.innerHTML = htmls.join('')
+            
           })
       }else{
         searchBtn.disabled = true
+        search_results_block.style.display = 'none'
       }
     })
 

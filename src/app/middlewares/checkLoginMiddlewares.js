@@ -13,7 +13,7 @@ function checkLoginMiddlewares(req, res, allowedListRoles , next) { //next: nh·∫
             if (account && allowedListRoles.includes(account.role)){
               next(account) //truy·ªÅn account qua view
             }else{
-              res.redirect('/error') //thay trang ERROR
+              res.redirect('/error/errorAuth') 
             }
           })
           .catch(next)

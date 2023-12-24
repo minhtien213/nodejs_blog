@@ -1,21 +1,23 @@
 
-
-<div class="container">
     <div class="row">
         {{#each courses}}
-            <div class="col-sm-6 col-lg-4">
-                <div class="card card-course-item">
-                    <a href="/courses/{{this.slug}}">
-                        <img src="{{this.image}}" class="card-img-top" alt="{{this.name}}">
-                    </a>
-                    <div class="card-body">
-                        <a href="#">
-                            <h5 class="card-title">{{this.name}}</h5>
-                        </a>
-                        <p class="card-text">{{this.description}}</p>
-                        <button type="submit" id="add_cart" class="btn btn-primary" data-course-id="{{this._id}}">Add cart</button>
-                    </div>
+            <div class="card mr-auto mb-4" style="max-width: 540px;">
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <a href="/courses/{{this.slug}}">
+                    <img src="{{this.image}}" class="img-fluid rounded-start" alt="{{this.name}}">
+                  </a>
                 </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <a href="/courses/{{this.slug}}">
+                      <h5 class="card-title">{{this.name}}</h5>
+                    </a>
+                    <p class="card-text">{{this.description}}</p>
+                    <button type="submit" id="add_cart" class="btn btn-primary" data-course-id="{{this._id}}">Add cart</button>
+                  </div>
+                </div>
+              </div>
             </div>
         {{/each}}
     </div>
@@ -39,7 +41,6 @@
     {{!-- tạo form hidden để thực hiện submit --}}
     <form id="add-to-cart-form" method="POST"></form>
 
-</div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function(e) {

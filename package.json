@@ -40,6 +40,7 @@
     "express-handlebars": "^7.1.2",
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
+    "moment": "^2.29.4",
     "mongoose": "^6.11.4",
     "mongoose-delete": "^1.0.1",
     "mongoose-sequence": "^5.3.1",

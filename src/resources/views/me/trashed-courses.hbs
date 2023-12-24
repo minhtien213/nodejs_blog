@@ -1,4 +1,4 @@
-<form name="container-form" method="POST" action="/courses/handle-trash-form-actions" class="mt-4">
+<form name="container-form" method="POST" action="/courses/handle-trash-form-actions">
    <div class="d-flex align-items-center justify-content-center">
      <h3>Khóa học đã xóa</h3> <span>({{ deletedCount }})</span>
     <a href="/me/stored/courses" class="ml-auto">Danh sách khóa học ({{coursesCount}})</a>
@@ -21,7 +21,7 @@
       <button class="btn btn-primary apply-submit-btn btn-sm" disabled="disabled">Áp dụng</button>
     </div>
 
-    <table class="table mt-4 text-center">
+    <table class="table table-striped mt-4 text-center">
         <thead>
             <tr>
                 <th></th>

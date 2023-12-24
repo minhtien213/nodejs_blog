@@ -1,29 +1,30 @@
-// các tuyến đường liên quan đến News thì tạo phương thức ở class này
 
 const Course = require("../models/Course")
 const Account = require("../models/Account")
 const { mutipleMongooseToObject, mongooseToObject } = require("../../util/mongoose")
 const paginationMiddlewares = require('../middlewares/paginationMiddlewares')
 const checkUser = require('../middlewares/checkUser')
-const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
+const checkCartItemCount = require('../middlewares/checkCartItemCount')
 
 
 class SiteController {
 
     index(req, res, next) {
-      const {currentPage, skipPage} = paginationMiddlewares(req, 3) // 3 - pageSize
+      const cartItemCount = checkCartItemCount(req) //check cart item count
+      const {currentPage, skipPage} = paginationMiddlewares(req, 4) // 3 - pageSize
       checkUser(req, res)
           .then(account => {
               Promise.all([
-                Course.find({}).skip(skipPage).limit(3),
+                Course.find({}).skip(skipPage).limit(4),
                 Course.countDocuments({}),
               ])
                   .then(([courses, coursesCount]) => {
                     res.render('site/home', {
                       courses: mutipleMongooseToObject(courses),
-                      totalPage: Math.ceil(coursesCount / 3),
+                      totalPage: Math.ceil(coursesCount / 4),
                       currentPage,
-                      account: mongooseToObject(account)
+                      account: mongooseToObject(account),
+                      cartItemCount
                     })
                   })
                   .catch(next)
@@ -36,7 +37,7 @@ class SiteController {
       const keySearch = req.query.keysearch
       // Tìm kiếm không phân biệt chữ hoa/chữ thường với $regex và tùy chọn 'i'
       const regex = new RegExp(keySearch, 'i')
-      Course.find({ name: { $regex: regex } })
+      Course.find({ name: { $regex: regex } }).skip(0).limit(2)
         .then(courses => {
           res.json(courses)
         })
@@ -45,6 +46,7 @@ class SiteController {
 
     //[GET] /search-results
     searchResutls(req, res, next) {
+        const cartItemCount = checkCartItemCount(req) //check cart item count
         checkUser(req, res)
         .then(account => {
             const keySearch = req.query.keysearch
@@ -62,7 +64,8 @@ class SiteController {
                     coursesCount,
                     keySearch,
                     resultSize,
-                    account: mongooseToObject(account)
+                    account: mongooseToObject(account),
+                    cartItemCount
                   })
                 })
                 .catch(next)
@@ -71,12 +74,6 @@ class SiteController {
             }
         })
         .catch(next)
-    }
-
-
-    //[GET] /error
-    error(req, res, next) {
-      res.render('site/error');
     }
 
 }

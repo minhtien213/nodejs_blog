@@ -59,10 +59,10 @@ module.exports = {
         return paginationHTML
     },
 
-    loadmore: function(keySearch, resultSize, coursesCount) {
+    loadmoreSearchResult: function(keySearch, resultSize, coursesCount) {
         resultSize += 1
         resultSize = resultSize > coursesCount ? coursesCount : resultSize
-        return `<a href="/search-results?keysearch=${keySearch}&result=${resultSize}" class="btn btn-primary mt-4">Load more...</a>`
+        return `<a href="/search-results?keysearch=${keySearch}&result=${resultSize}" class="btn btn-outline-primary mt-4 mb-4">Load more...</a>`
     }
     
 }

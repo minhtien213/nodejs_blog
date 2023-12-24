@@ -36,7 +36,7 @@ class AuthController {
           // Sử dụng biến môi trường thay cho secretKey tực tiếp
           const secretKey = process.env.JWT_SECRET || 'minhtien'
           const token = jwt.sign({ _id: account._id }, secretKey, { algorithm: 'HS256' }) //{ algorithm: 'HS256' } - thuật toán tạo token
-          res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 900000 }) //hạn sống token 15p
+          res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 9000000 }) //hạn sống token 15p
 
           const previousPath = req.cookies.previousPath || '/' //lấy đường dẫn trước đó trong cookie nếu không có thì chuyển về trang "/" - trang home
           res.clearCookie('previousPath') // Xóa cookie sau khi sử dụng
@@ -59,24 +59,76 @@ class AuthController {
   // [POST] /auth/register
   async registerHandle (req, res, next){
     try {
-      // Hash mật khẩu trước khi lưu vào cơ sở dữ liệu
-      const hashedPassword = await bcrypt.hash(req.body.password, 10)
-  
-      // Tạo tài khoản mới với mật khẩu đã hash
-      const account = new Account({
-        ...req.body,
-        password: hashedPassword
-      })
-  
-      // Lưu tài khoản vào cơ sở dữ liệu
-      await account.save()
-  
-      res.redirect('/auth/login')
+      const username = req.body.username.trim()
+      Account.findOne({username: username})
+        .then(account =>{
+          if(account){
+            res.send("Đã tồn tại Username: " + username)
+          }else{
+            const password = req.body.password.trim()
+            const passwordConfirm = req.body.password_confirm.trim()
+            if(password === passwordConfirm){
+              // Hash mật khẩu trước khi lưu vào cơ sở dữ liệu
+              bcrypt.hash(req.body.password, 10)
+                .then(hashedPassword => {
+                  // Tạo tài khoản mới với mật khẩu đã hash
+                  const account = new Account({
+                    ...req.body,
+                    password: hashedPassword
+                  })
+                  // Lưu tài khoản vào cơ sở dữ liệu
+                  account.save()
+                  res.redirect('/auth/login')
+                })
+                .catch(next)
+            }else{
+              res.redirect('back')
+            }
+          }
+        })
+      
     } catch (error) {
       next(error)
     }
   }
 
+  //[GET] /auth/reset-password
+  resetPassword(req, res, next) {
+    checkUser(req, res)
+      .then(account => {
+          res.render('auth/resetPassword', {account: mongooseToObject(account)})
+      })
+      .catch(next)
+  }
+
+  //[PUT] /auth/reset-password
+   resetPasswordHandle(req, res, next) {
+        const username = req.body.username.trim()
+        const name = req.body.name.trim()
+        Account.findOne({username: username, name: name})
+          .then(account => {
+            if(account){
+              const password = req.body.password.trim()
+              const passwordConfirm = req.body.password_confirm.trim()
+              if(password === passwordConfirm){
+                bcrypt.hash(password, 10)
+                  .then((hashedPassword) => {
+                    Account.findOneAndUpdate({_id: account._id}, {password: hashedPassword}, {new: true})
+                      .then(() => {
+                        res.render('auth/login')
+                      })
+                      .catch(next)
+                  })
+                  .catch(next)
+              }else{
+                res.send('Password không khớp!')
+              }
+            }else{
+              res.send('Không tồn tại tài khoản với Username: ' + username)
+            }
+          })
+          .catch(next)
+  }
 }
 
 module.exports = new AuthController()
