@@ -3,13 +3,11 @@ const Course = require("../models/Course");
 const { mutipleMongooseToObject, mongooseToObject } = require("../../util/mongoose")
 const paginationMiddlewares = require('../middlewares/paginationMiddlewares')
 const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
-const checkCartItemCount = require('../middlewares/checkCartItemCount')
 
 class meController {
 
     // [GET] /me/stored/courses
     storedCourses(req, res, next) {
-      const cartItemCount = checkCartItemCount(req) //check cart item count
       checkLoginMiddlewares(req, res, [0], (account) => { //truyền array roles - callback thay cho next()
         //middlewares pagination - lấy ra 2 giá trị currentPage, skipPage được trả về từ hàm paginationMiddlewares
         const {currentPage, skipPage} = paginationMiddlewares(req, 3) // 3 - pageSize
@@ -26,7 +24,7 @@ class meController {
               deletedCount,
               currentPage,
               account: mongooseToObject(account),
-              cartItemCount
+              cartItemCount: account ?  account.cart.length : '' 
             })
           )
           .catch(next);
@@ -35,7 +33,6 @@ class meController {
     
     // [GET] /me/trash/courses
     trashCourses(req, res, next) {
-      const cartItemCount = checkCartItemCount(req) //check cart item count
       checkLoginMiddlewares(req, res, [0], (account) => {
         //middlewares pagination - lấy ra 2 giá trị currentPage, skipPage được trả về từ hàm paginationMiddlewares
         const {currentPage, skipPage} = paginationMiddlewares(req, 3) // 3 - pageSize
@@ -52,7 +49,7 @@ class meController {
               totalPage: Math.ceil(deletedCount / 3),
               currentPage,
               account: mongooseToObject(account),
-              cartItemCount
+              cartItemCount: account ?  account.cart.length : '' 
             })
           )
           .catch(next)

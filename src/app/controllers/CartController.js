@@ -16,11 +16,10 @@ class CartController {
       checkLoginMiddlewares(req, res, [0, 1], (account) => {
         Account.findById({ _id: account._id}).populate({ path: 'cart.courses', model: 'Course' })
           .then((accountWithCart) =>{
-            const cartItemCount = accountWithCart.cart.length
             res.render('site/cart' , { 
               cartItems: mongooseToObject(accountWithCart.cart),
               account: mongooseToObject(account),
-              cartItemCount,
+              cartItemCount: account ?  account.cart.length : '' 
             })
           })
       })
@@ -41,13 +40,7 @@ class CartController {
           { $addToSet: { cart: cartItem } },
           { new: true } // Trả về document sau khi cập nhật
         )
-          .then((accountWithCart) => {
-            if(accountWithCart){
-              const cartItemCount = accountWithCart.cart.length
-              res.cookie('cartItemCount', cartItemCount, { httpOnly: true, secure: true, maxAge: 900000 })
-            } //nếu cartItem chưa có trong mảng cart của user
-            res.redirect('back')
-          })
+          .then(() => { res.redirect('back')})
           .catch(next)
       })
     }
@@ -62,14 +55,8 @@ class CartController {
           { $pull: { cart: { courses: courseIdToRemove } } },
           { new: true } // Trả về tài liệu sau khi cập nhật
         )
-        .then((accountWithCart) => {
-          if(accountWithCart){
-            const cartItemCount = accountWithCart.cart.length
-            res.cookie('cartItemCount', cartItemCount, { httpOnly: true, secure: true, maxAge: 900000 })
-          } //nếu cartItem chưa có trong mảng cart của user
-          res.redirect('back')
-        })
-        .catch(next)
+          .then(() => { res.redirect('back')})
+          .catch(next)
       })
     }
 

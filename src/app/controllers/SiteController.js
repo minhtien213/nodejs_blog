@@ -4,13 +4,11 @@ const Account = require("../models/Account")
 const { mutipleMongooseToObject, mongooseToObject } = require("../../util/mongoose")
 const paginationMiddlewares = require('../middlewares/paginationMiddlewares')
 const checkUser = require('../middlewares/checkUser')
-const checkCartItemCount = require('../middlewares/checkCartItemCount')
 
 
 class SiteController {
 
     index(req, res, next) {
-      const cartItemCount = checkCartItemCount(req) //check cart item count
       const {currentPage, skipPage} = paginationMiddlewares(req, 4) // 3 - pageSize
       checkUser(req, res)
           .then(account => {
@@ -18,16 +16,16 @@ class SiteController {
                 Course.find({}).skip(skipPage).limit(4),
                 Course.countDocuments({}),
               ])
-                  .then(([courses, coursesCount]) => {
-                    res.render('site/home', {
-                      courses: mutipleMongooseToObject(courses),
-                      totalPage: Math.ceil(coursesCount / 4),
-                      currentPage,
-                      account: mongooseToObject(account),
-                      cartItemCount
-                    })
+                .then(([courses, coursesCount]) => {
+                  res.render('site/home', {
+                    courses: mutipleMongooseToObject(courses),
+                    totalPage: Math.ceil(coursesCount / 4),
+                    currentPage,
+                    account: mongooseToObject(account),
+                    cartItemCount: account ?  account.cart.length : '' 
                   })
-                  .catch(next)
+                })
+                .catch(next)
           })
           .catch(next)
     }
@@ -46,7 +44,6 @@ class SiteController {
 
     //[GET] /search-results
     searchResutls(req, res, next) {
-        const cartItemCount = checkCartItemCount(req) //check cart item count
         checkUser(req, res)
         .then(account => {
             const keySearch = req.query.keysearch
@@ -65,7 +62,7 @@ class SiteController {
                     keySearch,
                     resultSize,
                     account: mongooseToObject(account),
-                    cartItemCount
+                    cartItemCount: account ?  account.cart.length : '' 
                   })
                 })
                 .catch(next)

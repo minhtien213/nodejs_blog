@@ -8,7 +8,6 @@ module.exports = function checkUser(req) {
       const token = req.cookies.token
       if (token) {
         try {
-          // const cartItemCount = req.cookies.cartItemCount || 0
           const secretKey = process.env.JWT_SECRET || 'minhtien'
           const result = jwt.verify(token, secretKey, { algorithm: 'HS256' })
           Account.findById({ _id: result._id })
@@ -24,7 +23,7 @@ module.exports = function checkUser(req) {
           reject(error)
         }
       } else {
-        resolve()
+        resolve(null)
       }
     })
   }
