@@ -9,7 +9,7 @@ const mongooseDelete = require('mongoose-delete')
 const CourseSchema = new Schema({
     name: { type: String, require: true},
     description: { type: String},
-    image: { type: String, require: true},
+    images: [{ type: String, required: true }],
     slug: { type: String, slug: "name", unique: true } // unique: true: tự động tạo slug khi đặt trùng name
 }, {
     timestamps: true // tự động thêm time tạo / sửa

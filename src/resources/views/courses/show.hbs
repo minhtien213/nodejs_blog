@@ -1,12 +1,36 @@
-<div>
-    <div class="row">
-        <div class="col-lg-3">
-            <button>Học ngay</button>
+<style>
+    .listImgs{
+        display: flex;
+        width: 90%;
+        height: 150px;
+        align-items: center;
+    }
+
+    .listImgs_img{
+        border-radius: 5px;
+        margin: 0 5px;
+        max-width: 35%;
+        max-height: 35%;
+        object-fit: cover;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-lg-3">
+        <h3 style="border-right: 3px solid #201e1e; height: 100%">Danh mục</h3>
+    </div>
+    <div class="col-lg-9">
+        <h2>{{course.name}}</h2>
+        <img src="{{lookup course.images 0}}" style="width: 30%; max-height: 250px; object-fit: cover;  margin: 0 5px auto; border: 2px solid #419edc;" class="img-fluid rounded-start" alt="{{this.name}}">
+        
+        <div class="listImgs">
+            {{#each course.images}}
+                <img src="{{this}}" class="img-fluid rounded-start listImgs_img" alt="{{../name}}">
+            {{/each}}
         </div>
-        <div class="col-lg-9">
-            <h2>{{course.name}}</h2>
-            <img src="{{course.image}}" style="width: 40%; margin: 20px auto;" class=" container img-fluid rounded-start" alt="{{this.name}}">
-            <p>{{course.description}}</p>
-        </div>
+        
+        
+        <p>{{course.description}}</p>
     </div>
 </div>

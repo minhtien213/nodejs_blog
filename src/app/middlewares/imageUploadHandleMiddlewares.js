@@ -12,4 +12,4 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage })
 
-module.exports = upload.single('image')
+module.exports =  upload.array('images', 5) //upload.single('image') - upload 1 ảnh

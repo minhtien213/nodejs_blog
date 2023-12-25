@@ -5,7 +5,7 @@
               <div class="row g-0">
                 <div class="col-md-4">
                   <a href="/courses/{{this.courses.slug}}">
-                    <img src="{{this.courses.image}}" class="img-fluid rounded-start" alt="{{this.courses.name}}">
+                    <img src="{{lookup this.courses.images 0}}" class="img-fluid rounded-start" alt="{{this.courses.name}}">
                   </a>
                 </div>
                 <div class="col-md-8">

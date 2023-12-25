@@ -1,17 +1,29 @@
 <style>
-  #search-inpu{
+  #search-input{
     position: relative;
   }
   .search_results_block{
     position: absolute;
-    width: 100%;
-    top: 0;
-    left: 0;
+    width: 80%;
+    top: -5px;
+    left: 5%;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 5px;
     padding: 10px;
     display: none;
+  }
+  .result_item{
+    background-color: rgb(255, 255, 255);
+    padding: 3px;
+    margin-bottom: 3px;
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+  }
+  
+  a.result_block{
+    text-decoration: none;
   }
 </style>
 
@@ -25,7 +37,7 @@
     <div class="input-group mr-4 ml-4">
       <input id="search-input" type="search" class="form-control rounded" placeholder="search..." aria-label="Search" aria-describedby="search-addon" />
       <button id="search-btn" type="button" class="btn btn-primary ml-2" disabled>Search</button>
-     <div class="search_results_block" style="margin-top: 56px ;" >
+      <div class="search_results_block" style="margin-top: 56px ;" >
         {{!-- render result --}}
       </div>
     </div>
@@ -62,18 +74,18 @@
           </div>
         </li>
       </ul>
-        <div>
-          {{#if account}}
-            <a style="position: relative; " href="/cart/{{account._id}}">
-              <i style="color: aliceblue; font-size: 40px; margin: auto 15px" class="fa-solid fa-cart-shopping"></i>
-              <span style="position: absolute; top: -18px; right: 30px">{{cartItemCount}}</span>
-            </a>
-          {{else}}
-            <a style="position: relative; " href="/error/errorCart">
-              <i style="color: aliceblue; font-size: 40px; margin: auto 15px" class="fa-solid fa-cart-shopping"></i>
-            </a>
-          {{/if}}
-        </div>
+      <div>
+        {{#if account}}
+          <a style="position: relative; " href="/cart/{{account._id}}">
+            <i style="color: aliceblue; font-size: 40px; margin: auto 15px" class="fa-solid fa-cart-shopping"></i>
+            <span style="position: absolute; top: -18px; right: 30px">{{cartItemCount}}</span>
+          </a>
+        {{else}}
+          <a style="position: relative; " href="/error/errorCart">
+            <i style="color: aliceblue; font-size: 40px; margin: auto 15px" class="fa-solid fa-cart-shopping"></i>
+          </a>
+        {{/if}}
+      </div>
     </div>
   </nav>
 
@@ -95,13 +107,12 @@
         fetch(url)
           .then(response => {return response.json()})
           .then(datas => {
-            console.log(datas)
             search_results_block.innerHTML = ''
             var htmls = datas.map(function(item){
-              return `<a href="/courses/${item.slug}">
-                        <div class="card-body">
-                          <h5 class="card-title">${item.name}</h5>
-                          <p class="card-text">${item.description}</p>
+              return `<a href="/courses/${item.slug}" class="result_block">
+                        <div class="card-body result_item">
+                          <p class="card-title">${item.name}</p>
+                          <small class="card-text">${item.description}</small>
                         </div>
                       </a>`
             })

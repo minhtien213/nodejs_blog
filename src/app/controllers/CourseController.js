@@ -38,10 +38,9 @@ class CoursesController {
     store(req, res, next) {
       // Sử dụng Multer Middleware để xử lý tệp ảnh (nếu có)
       multerMiddleware(req, res, () => {
-        // Nếu có file đã tải lên, sử dụng đường dẫn từ req.file
-        if (req.file) {
-          req.body.image = req.file.path.replace(/\\/g, '/').replace('src/public', '..')
-        }
+        // Nếu có files đã tải lên, sử dụng đường dẫn từ req.files
+        req.body.images = req.files ? req.files.map((file) => 
+        file.path.replace(/\\/g, '/').replace('src/public', '..')) : null
         const course = new Course(req.body)
         course.save()
           .then(() => res.redirect('/me/stored/courses'))
@@ -66,10 +65,9 @@ class CoursesController {
     update(req, res, next) {
       // Sử dụng Multer Middleware để xử lý tệp ảnh (nếu có)
       multerMiddleware(req, res, () => {
-        // Nếu có file đã tải lên, sử dụng đường dẫn từ req.file
-        if (req.file) {
-          req.body.image = req.file.path.replace(/\\/g, '/').replace('src/public', '..')
-        }
+        // Nếu có files đã tải lên, sử dụng đường dẫn từ req.files
+        req.body.images = req.files ? req.files.map((file) => 
+        file.path.replace(/\\/g, '/').replace('src/public', '..')) : null
         Course.updateOne( {_id: req.params.id}, req.body) //{_id: req.params.id}: id chỉnh sửa, req.body: object muốn sửa
         .then(() => res.redirect('/me/stored/courses'))
         .catch(next)

@@ -115,16 +115,16 @@ class AuthController {
                   .then((hashedPassword) => {
                     Account.findOneAndUpdate({_id: account._id}, {password: hashedPassword}, {new: true})
                       .then(() => {
-                        res.render('auth/login')
+                        res.redirect('login')
                       })
                       .catch(next)
                   })
                   .catch(next)
               }else{
-                res.send('Password không khớp!')
+                res.send('Thông tin Mật khẩu và Xác nhận mật khẩu không khớp!')
               }
             }else{
-              res.send('Không tồn tại tài khoản với Username: ' + username)
+              res.send(`Thông tin Username (${username}) và Name (${name}) không chính xác!` )
             }
           })
           .catch(next)
