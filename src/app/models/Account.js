@@ -24,7 +24,6 @@ const AccountSchema = new Schema({
 
 
 // Add plugins
-
 mongoose.plugin(slug)
 AccountSchema.plugin(mongooseDelete, {
     overrideMethods: 'all',

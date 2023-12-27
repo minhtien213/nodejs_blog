@@ -107,6 +107,7 @@
         fetch(url)
           .then(response => {return response.json()})
           .then(datas => {
+            //console.log(datas)
             search_results_block.innerHTML = ''
             var htmls = datas.map(function(item){
               return `<a href="/courses/${item.slug}" class="result_block">
@@ -117,7 +118,6 @@
                       </a>`
             })
             search_results_block.innerHTML = htmls.join('')
-            
           })
       }else{
         searchBtn.disabled = true

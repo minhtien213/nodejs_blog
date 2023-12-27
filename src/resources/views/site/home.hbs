@@ -14,7 +14,7 @@
                       <h5 class="card-title">{{this.name}}</h5>
                     </a>
                     <p class="card-text">{{this.description}}</p>
-                    <button type="submit" id="add_cart" class="btn btn-primary" data-course-id="{{this._id}}">Add cart</button>
+                    <a href="/courses/{{this.slug}}">Xem chi tiết</a>
                   </div>
                 </div>
               </div>
@@ -38,26 +38,4 @@
       </nav>
     </div>
 
-    {{!-- tạo form hidden để thực hiện submit --}}
-    <form id="add-to-cart-form" method="POST"></form>
 
-
-<script>
-  document.addEventListener("DOMContentLoaded", function(e) {
-
-    const add_cartsBtn = document.querySelectorAll('#add_cart')
-    if(add_cartsBtn){
-      add_cartsBtn.forEach(function(add_cartBtn){
-        add_cartBtn.addEventListener('click', function (e) {
-          e.preventDefault()
-          const courseId = add_cartBtn.getAttribute('data-course-id')
-          const add_to_cart_form = document.querySelector('#add-to-cart-form')
-          add_to_cart_form.action = '/cart/' + courseId + '?_method=PUT'
-          add_to_cart_form.submit()
-        })
-      })
-    }
-
-  })
-  
-</script>

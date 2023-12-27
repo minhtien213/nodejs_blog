@@ -1,4 +1,3 @@
-// các tuyến đường liên quan đến News thì tạo phương thức ở class này
 
 const moment = require('moment')
 const mongoose = require('mongoose')
@@ -22,6 +21,7 @@ class CartController {
               cartItemCount: account ?  account.cart.length : '' 
             })
           })
+          .catch(next)
       })
     }
 
