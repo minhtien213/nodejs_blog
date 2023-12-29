@@ -16,8 +16,8 @@ module.exports = function checkUser(req) {
             })
             .catch(err => {
               console.error(err)
-              reject(err);
-            });
+              reject(err)
+            })
         } catch (error) {
           console.error(error)
           reject(error)
@@ -31,7 +31,7 @@ module.exports = function checkUser(req) {
 
 //   use:
 // checkUser(req, res)
-//     .then(username => {
+//     .then(account => {
 //         //logic
 //     })
-//     .catch(next);
+//     .catch(next)

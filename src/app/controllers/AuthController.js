@@ -39,7 +39,8 @@ class AuthController {
           res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 9000000 }) //hạn sống token 15p
 
           const previousPath = req.cookies.previousPath || '/' //lấy đường dẫn trước đó trong cookie nếu không có thì chuyển về trang "/" - trang home
-          res.clearCookie('previousPath') // Xóa cookie sau khi sử dụng
+          console.log(previousPath)
+          res.clearCookie('previousPath', { path: '/' }) // Xóa cookie sau khi sử dụng
           
           res.redirect(previousPath) //chuyển hướng theo đường dẫn trước(trang yêu cầu phải login)
         }else{
@@ -76,6 +77,7 @@ class AuthController {
                     ...req.body,
                     password: hashedPassword
                   })
+                  console.log(account)
                   // Lưu tài khoản vào cơ sở dữ liệu
                   account.save()
                   res.redirect('/auth/login')

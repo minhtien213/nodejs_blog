@@ -1,4 +1,4 @@
-const coursesRouter = require('./courses')
+const coursesRouter = require('./product')
 const meRouter = require('./me')
 const siteRouter = require('./site')
 const authRouter = require('./auth')
@@ -7,7 +7,7 @@ const commentRouter = require('./comment')
 const errorRouter = require('./error')
 
 function routes(app) {
-    app.use('/courses', coursesRouter)
+    app.use('/products', coursesRouter)
     app.use('/me', meRouter)
     app.use('/auth', authRouter)
     app.use('/cart', cartRouter)

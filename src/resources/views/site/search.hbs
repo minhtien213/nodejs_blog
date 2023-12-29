@@ -1,26 +1,25 @@
 
     <div>
-        Đã tìm thấy <span style="color: blue;">{{coursesCount}}</span> kết quả cho: <span style="color: blue;">"{{keySearch}}"</span>
+        Đã tìm thấy <span style="color: blue;">{{productsCount}}</span> kết quả cho: <span style="color: blue;">"{{keySearch}}"</span>
     </div>
     <div class="result_container">
         {{!-- render result data --}}
         <div class="row">
-        {{#each courses}}
+        {{#each products}}
             <div class="card mr-auto mt-4" style="max-width: 540px;">
               <div class="row g-0">
                 <div class="col-md-4">
-                  <a href="/courses/{{this.slug}}">
+                  <a href="/products/{{this.slug}}">
                     <img src="{{lookup this.images 0}}" class="img-fluid rounded-start" alt="{{this.name}}">
                   </a>
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
-                    <a href="/courses/{{this.slug}}">
+                    <a href="/products/{{this.slug}}">
                       <h5 class="card-title">{{this.name}}</h5>
                     </a>
                     <p class="card-text">{{this.description}}</p>
-                    <p class="card-text"><small class="text-body-secondary">{{this.addedAt}}</small></p>
-                    <button type="submit" id="add_cart" class="btn btn-primary" data-course-id="{{this._id}}">Add cart</button>
+                    <a href="/products/{{this.slug}}"><button class="btn btn-primary">Xem chi tiết</button></a>
                   </div>
                 </div>
               </div>
@@ -30,7 +29,7 @@
     </div>
 
     <div>
-        {{{loadmoreSearchResult keySearch resultSize coursesCount}}}
+        {{{loadmoreSearchResult keySearch resultSize productsCount}}}
     </div>
 
     {{!-- tạo form hidden để thực hiện submit --}}
@@ -61,8 +60,8 @@
                         datas.forEach( data => {
                             var resultItem = document.createElement('div')
                             resultItem.classList.add('col-sm-6', 'col-lg-4')
-                            resultItem.innerHTML = `<div class="card card-course-item">
-                                                        <a href="/courses/${data.slug}">
+                            resultItem.innerHTML = `<div class="card card-product-item">
+                                                        <a href="/products/${data.slug}">
                                                             <img src="${data.image}" class="card-img-top" alt="${data.name}">
                                                         </a>
                                                         <div class="card-body">
@@ -70,7 +69,7 @@
                                                                 <h5 class="card-title">${data.name}</h5>
                                                             </a>
                                                             <p class="card-text">${data.description}</p>
-                                                            <a href="/courses/${data.slug}" class="btn btn-primary">Học ngay</a>
+                                                            <a href="/products/${data.slug}" class="btn btn-primary">Học ngay</a>
                                                         </div>
                                                     </div>`
 
@@ -82,22 +81,4 @@
     })
 
 </script> --}}
-<script>
-  document.addEventListener("DOMContentLoaded", function(e) {
 
-    const add_cartsBtn = document.querySelectorAll('#add_cart')
-    if(add_cartsBtn){
-      add_cartsBtn.forEach(function(add_cartBtn){
-        add_cartBtn.addEventListener('click', function (e) {
-          e.preventDefault()
-          const courseId = add_cartBtn.getAttribute('data-course-id')
-          const add_to_cart_form = document.querySelector('#add-to-cart-form')
-          add_to_cart_form.action = '/cart/' + courseId + '?_method=PUT'
-          add_to_cart_form.submit()
-        })
-      })
-    }
-
-  })
-  
-</script>

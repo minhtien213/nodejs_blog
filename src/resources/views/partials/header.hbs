@@ -47,6 +47,9 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" id="profile" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {{#if account}}
+              <img src="../{{lookup account.images 0}}" style="width: 30px; height: 30px; border-radius: 50%;">
+              {{#if account.images}}
+              {{/if}}
               {{account.name}}
             {{else}}
               Login
@@ -54,23 +57,16 @@
           </a>
 
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="/courses/create">Đăng khóa học</a>
+            {{#if account}}
+              <a class="dropdown-item" href="/products/create">Thêm sản phẩm</a>
+              <a class="dropdown-item" href="/me/stored/products">Quản lí sản phẩm</a>
               <hr class="dropdown-divider">
-              <a class="dropdown-item" href="/me/stored/courses">Khóa học của tôi</a>
+              <a class="dropdown-item" href="/my-account">Tài khoản của tôi</a>
               <hr class="dropdown-divider">
-
-              {{#if account}}
-                <a class="dropdown-item" href="/auth/login" hidden >Đăng nhập</a>
-              {{else}}
-                <a class="dropdown-item" href="/auth/login" >Đăng nhập</a>
-              {{/if}}
-              
-              {{#if account}}
-                <a class="dropdown-item" href="/auth/logout">Đăng xuất</a>
-              {{else}}
-                <a class="dropdown-item" href="/auth/logout" hidden >Đăng xuất</a>
-              {{/if}}
-              
+              <a class="dropdown-item" href="/auth/logout">Đăng xuất</a>
+            {{else}}
+              <a class="dropdown-item" href="/auth/login" >Đăng nhập</a>
+            {{/if}}
           </div>
         </li>
       </ul>
@@ -110,7 +106,7 @@
             //console.log(datas)
             search_results_block.innerHTML = ''
             var htmls = datas.map(function(item){
-              return `<a href="/courses/${item.slug}" class="result_block">
+              return `<a href="/products/${item.slug}" class="result_block">
                         <div class="card-body result_item">
                           <p class="card-title">${item.name}</p>
                           <small class="card-text">${item.description}</small>
@@ -127,7 +123,7 @@
 
     searchBtn.addEventListener('click', function() {
       const searchValue = encodeURIComponent(searchInput.value.trim().toLowerCase())
-      window.location.href = `/search-results?keysearch=${searchValue}&result=1`
+      window.location.href = `/search-results?keysearch=${searchValue}&result=2`
     })
   })
 </script>

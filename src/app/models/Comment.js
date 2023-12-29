@@ -5,13 +5,11 @@ const mongooseDelete = require('mongoose-delete')
                 //khi xóa mềm sẽ là deleted: true
                 
 const CommentSchema = new Schema({
-    course: { type: Schema.Types.ObjectId, ref: 'Course' },
+    product: { type: Schema.Types.ObjectId, ref: 'Product' },
     account: { type: Schema.Types.ObjectId, ref: 'Account' },
     content: { type: String, require: true, },
-    
-    }, {
-    timestamps: true // tự động thêm time tạo / sửa
-})
+    addedAt: { type: String },
+    })
 
 
 // Add plugins

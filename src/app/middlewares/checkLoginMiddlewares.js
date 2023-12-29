@@ -13,6 +13,8 @@ function checkLoginMiddlewares(req, res, allowedListRoles , next) { //next: nh�
             if (account && allowedListRoles.includes(account.role)){
               next(account) //truyền account qua view
             }else{
+              const currentPath = req.originalUrl // lấy đường dẫn hiện tại trước chuyển đến login
+              res.cookie('previousPath', currentPath, { maxAge: 60000 }) //lưu vào cookies đường dẫn hiện tại
               res.redirect('/error/errorAuth') 
             }
           })

@@ -1,0 +1,121 @@
+<style>
+    .listImgs{
+        display: flex;
+        width: 90%;
+        height: 150px;
+        align-items: center;
+    }
+
+    .listImgs_img{
+        border-radius: 5px;
+        margin: 0 5px;
+        max-width: 35%;
+        max-height: 35%;
+        object-fit: cover;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-lg-2">
+        <h4 style="border-right: 3px solid #201e1e; height: 100%">Danh mục</h4>
+    </div>
+    <div class="col-lg-6">
+        <h2>{{product.name}}</h2>
+        <img src="{{lookup product.images 0}}" class="img-fluid rounded-start larger_img" style="width: 90%; max-height: 250px; object-fit: cover;  margin: 0 5px auto; border: 2px solid #419edc;"  alt="{{this.name}}">
+        
+        <div class="listImgs">
+            {{#each product.images}}
+                <img src="{{this}}" class="img-fluid rounded-start listImgs_img" alt="{{../name}}">
+            {{/each}}
+        </div>
+        <button type="submit" id="add_cart" class="btn btn-primary" data-product-id="{{product._id}}">Thêm vào giỏ hàng</button>
+        <button type="submit" id="order" class="btn btn-primary" data-product-id="{{product._id}}">Mua ngay</button>
+        <p>{{product.description}}</p>
+    </div>
+    <div class="col-lg-4">
+        <h3>Comment</h3>    
+        {{{loadCommentForm account product}}}
+    </div>
+</div>
+
+
+    {{!-- tạo form hidden để thực hiện submit --}}
+    <form id="add-to-cart-form" method="POST"></form>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        //Load comments
+        const comment_block = document.querySelector('.comment_block')
+
+        function loadComments(){
+            const productId = document.querySelector(".comment_input").getAttribute('data-productId')
+            const url = `/comment/${productId}/render-comment`
+            fetch(url)
+                .then((response) => {
+                    return response.json()
+                })
+                .then((comments) => {
+                    if( Array.isArray(comments) && comments.length > 0){
+                        comment_block.innerHTML = ''
+                        var htmls = comments.map((comment) => {
+                            return `<form method="POST" action="/comment/${comment._id}?_method=DELETE" class="comment_content mt-4">
+                                        <h5>${comment.account.name}</h5>
+                                        <p>${comment.content}</p>
+                                        <small>Ngày: ${comment.addedAt}</small>
+                                        {{!-- <button class="deleteCmt" type="submit">Xóa</button>
+                                        <button id="replyCmt" type="button">Trả lời</button> --}}
+                                    </form>` 
+                        })
+                        comment_block.innerHTML = htmls.join("")
+                    }else{
+                        comment_block.innerHTML = `<small>Chưa có bình luận cho sản phẩm này.</small>`
+                    }
+                    
+                })
+                .catch(() => { console.log("Failed to fetch")})
+        }
+
+        loadComments()
+
+
+        //add to cart
+        const add_cartsBtn = document.querySelectorAll('#add_cart')
+            if(add_cartsBtn){
+            add_cartsBtn.forEach(function(add_cartBtn){
+                add_cartBtn.addEventListener('click', function (e) {
+                e.preventDefault()
+                const productId = add_cartBtn.getAttribute('data-product-id')
+                const add_to_cart_form = document.querySelector('#add-to-cart-form')
+                add_to_cart_form.action = '/cart/' + productId + '?_method=PUT'
+                add_to_cart_form.submit()
+                })
+            })
+        }
+
+        //login navigation
+        const nav_login_btn = document.querySelector('#nav_login_btn')
+        if(nav_login_btn){
+            nav_login_btn.addEventListener('click', function(){
+            document.cookie = 'previousPath=' + window.location.href + '; path=/'
+            console.log('Cookie saved:', document.cookie)
+            window.location.href = 'http://localhost:3000/auth/login'
+            })
+        }
+
+        //Click listImages
+        const listImgs_img = document.querySelectorAll('.listImgs_img')
+        const larger_img = document.querySelector('.larger_img')
+        listImgs_img.forEach(function(image){
+            image.addEventListener('click', function(){
+                larger_img.src = image.src
+            })
+        })
+    })
+
+</script>
+
+
+
+                            

@@ -4,18 +4,18 @@
             <div class="card mr-auto mb-4" style="max-width: 540px;">
               <div class="row g-0">
                 <div class="col-md-4">
-                  <a href="/courses/{{this.courses.slug}}">
-                    <img src="{{lookup this.courses.images 0}}" class="img-fluid rounded-start" alt="{{this.courses.name}}">
+                  <a href="/products/{{this.products.slug}}">
+                    <img src="{{lookup this.products.images 0}}" class="img-fluid rounded-start" alt="{{this.products.name}}">
                   </a>
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
-                    <a href="/courses/{{this.courses.slug}}">
-                      <h5 class="card-title">{{this.courses.name}}</h5>
+                    <a href="/products/{{this.products.slug}}">
+                      <h5 class="card-title">{{this.products.name}}</h5>
                     </a>
-                    <p class="card-text">{{this.courses.description}}</p>
+                    <p class="card-text">{{this.products.description}}</p>
                     <small class="card-text"><p class="text-body-secondary">Ngày thêm: {{this.addedAt}}</p></small>
-                    <button type="submit" id="remove_cart" class="btn btn-primary" data-course-id="{{this.courses._id}}">Xóa khỏi giỏ hàng</button>
+                    <button type="submit" id="remove_cart" class="btn btn-primary" data-product-id="{{this.products._id}}">Xóa khỏi giỏ hàng</button>
                   </div>
                 </div>
               </div>
@@ -41,9 +41,9 @@
       remove_cartsBtn.forEach(function(remove_cartBtn){
         remove_cartBtn.addEventListener('click', function (e) {
           e.preventDefault()
-          const courseId = remove_cartBtn.getAttribute('data-course-id')
+          const productId = remove_cartBtn.getAttribute('data-product-id')
           const remove_to_cart_form = document.querySelector('#remove-to-cart-form')
-          remove_to_cart_form.action = '/cart/' + courseId + '?_method=DELETE'
+          remove_to_cart_form.action = '/cart/' + productId + '?_method=DELETE'
           remove_to_cart_form.submit()
         })
       })

@@ -1,20 +1,20 @@
 
     <div class="row">
-        {{#each courses}}
+        {{#each products}}
             <div class="card mr-auto mb-4" style="max-width: 540px;">
               <div class="row g-0">
                 <div class="col-md-4">
-                  <a href="/courses/{{this.slug}}">
+                  <a href="/products/{{this.slug}}">
                     <img src="{{lookup this.images 0}}" class="img-fluid rounded-start" alt="{{this.name}}">
                   </a>
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
-                    <a href="/courses/{{this.slug}}">
+                    <a href="/products/{{this.slug}}">
                       <h5 class="card-title">{{this.name}}</h5>
                     </a>
                     <p class="card-text">{{this.description}}</p>
-                    <a href="/courses/{{this.slug}}">Xem chi tiết</a>
+                    <a href="/products/{{this.slug}}"><button class="btn btn-primary">Xem chi tiết</button></a>
                   </div>
                 </div>
               </div>

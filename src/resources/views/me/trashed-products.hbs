@@ -1,13 +1,10 @@
-
-
-<form name="container-form" method="POST" action="/courses/handle-stored-form-actions">
-
+<form name="container-form" method="POST" action="/products/handle-trash-form-actions">
    <div class="d-flex align-items-center justify-content-center">
-     <h3>Khóa học của tôi</h3> <span>({{ coursesCount }})</span>
-      <a href="/me/trash/courses" class="ml-auto">Thùng rác ({{deletedCount}})</a>
+     <h3>Khóa học đã xóa</h3> <span>({{ deletedCount }})</span>
+    <a href="/me/stored/products" class="ml-auto">Danh sách khóa học ({{productsCount}})</a>
    </div>
 
-  <div class="d-flex align-items-center justify-content-center">
+   <div class="d-flex align-items-center justify-content-center">
       <div class="form-check">
           <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
           <label class="form-check-label" for="checkbox-all">
@@ -17,11 +14,13 @@
 
       <select name="action" class="form-control form-control-sm  text-center" style="margin: 0 10px; width: 160px;" required>
         <option value="">-- Chọn hành động --</option>
-        <option value="delete">Xóa</option>
+        <option value="resoteAll">Khôi phục</option>
+        <option value="deleteForce">Xóa vĩnh viễn</option>
       </select>
 
       <button class="btn btn-primary apply-submit-btn btn-sm" disabled="disabled">Áp dụng</button>
-  </div>
+    </div>
+
     <table class="table table-striped mt-4 text-center">
         <thead>
             <tr>
@@ -34,39 +33,39 @@
                   {{{sortable 'name' _sort}}}
                 </th>
                 <th scope="col">
-                  Thời gian tạo
-                  {{{sortable 'createdAt' _sort}}}
+                  Thời gian xóa
+                  {{{sortable 'deletedAt' _sort}}}
                 </th>
                 <th scope="col">Tùy chọn</th>
             </tr>
         </thead>
         <tbody>
-            {{#each courses}}
+            {{#each products}}
             <tr style="border-bottom: 1px solid #dee2e6;">
                 <td>
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="courseIds[]" value="{{this._id}}">
+                    <input class="form-check-input" type="checkbox" name="productIds[]" value="{{this._id}}">
                   </div>
                 </td>
                 <th scope="row">{{stt @index 1}}</th>
                 <td>{{this.name}}</td>
-                <td>{{this.createdAt}}</td>
+                <td>{{this.deletedAt}}</td>
                 <td>
-                    <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</a>
-                    <a href="" class="btn btn-link" data-id="{{this._id}}" data-bs-toggle="modal" data-bs-target="#delete-course-modal">Xóa</a>
+                    <a href="" data-id="{{this._id}}" class="btn btn-link btn-restore">Khôi phục</a>
+                    <a href="" class="btn btn-link" data-id="{{this._id}}" data-bs-toggle="modal" data-bs-target="#delete-product-modal">Xóa vĩnh viễn</a>
                 </td>
             </tr>
             {{else}}
               <tr>
                 <td colspan="5" class="text-center">
-                  Bạn chưa đăng khóa học nào.
-                  <a href="/courses/create">Đăng khóa học</a>
+                  Thùng rác trống.
+                  <a href="/me/stored/products">Danh sách khóa học</a>
                 </td>
               </tr>
             {{/each}}
         </tbody>
     </table>
-    
+
     <div id="pagination" class="d-flex align-items-center justify-content-center">
       <nav aria-label="Page navigation example">
         <ul class="pagination">
@@ -82,14 +81,12 @@
         </ul>
       </nav>
     </div>
-
+    
 </form>
 
 
-
-
-{{!-- modal delete course --}}
-<div id="delete-course-modal" class="modal" tabindex="-1">
+{{!-- modal delete product --}}
+<div id="delete-product-modal" class="modal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -97,63 +94,75 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>Bạn có chắc muốn xóa khóa học này không?</p>
+        <p>Không thể khôi phục sau khi xóa.Bạn có chắc muốn xóa khóa học này không?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        <button type="button" id="btn-delete" class="btn btn-danger">Xóa bỏ</button>
+        <button type="button" id="btn-delete" class="btn btn-danger">Xóa vĩnh viễn</button>
       </div>
     </div>
   </div>
 </div>
 
 {{!-- tạo form hidden để thực hiện submit --}}
-<form id="delete-course-form" method="POST"></form>
+<form id="delete-product-form" method="POST"></form>
+<form id="restore-product-form" method="POST"></form>
 
 <script>
     document.addEventListener("DOMContentLoaded", function(){
-        var deleteCourseModal = document.getElementById('delete-course-modal')
+        var deleteproductModal = document.getElementById('delete-product-modal')
         var btnDelete = document.querySelector('#btn-delete')
-        var formDeleteCourse = document.querySelector('#delete-course-form')
+        var btnRestore = $('.btn-restore')
         var checkboxAll = $('#checkbox-all')
-        var checkboxCourseItem = $('input[name="courseIds[]"]')
+        var checkboxproductItem = $('input[name="productIds[]"]')
         var applySubmitBtn =  $('.apply-submit-btn')
-        var courseId;
+        
+        var formDeleteproduct = document.querySelector('#delete-product-form')
+        var formRestoreproduct = document.querySelector('#restore-product-form')
+        var productId;
 
         //click btn xóa trong khóa học
-        if (deleteCourseModal) {
-            deleteCourseModal.addEventListener('show.bs.modal', function(event) {
+        if (deleteproductModal) {
+            deleteproductModal.addEventListener('show.bs.modal', function(event) {
                 // Button that triggered the modal
                 btnDelete = event.relatedTarget
                 // Extract info from data-bs-* attributes
-                courseId = btnDelete.getAttribute('data-id')
+                productId = btnDelete.getAttribute('data-id')
             })
         }
 
         //click btn xóa trong modal
         btnDelete.addEventListener('click', function (){
-            formDeleteCourse.action = '/courses/' + courseId + '?_method=DELETE'
-            formDeleteCourse.submit()
+            formDeleteproduct.action = '/products/' + productId + '/force?_method=DELETE'
+            formDeleteproduct.submit()
             })
+
+        //click khôi phục
+        btnRestore.click(function (e){
+          e.preventDefault()
+          productId = $(this).data('id')
+          formRestoreproduct.action = '/products/' + productId + '/restore?_method=PATCH'
+          formRestoreproduct.submit()
+        })
 
         //click checkboxAll
         checkboxAll.change(function(){
           var isCheckedAll = $(this).prop('checked')
-          checkboxCourseItem.prop('checked', isCheckedAll)
+          checkboxproductItem.prop('checked', isCheckedAll)
           renderapplySubmitBtn()
         })
 
-        //click checkboxCourseItem
-        checkboxCourseItem.change(function(){
-          var isCheckedAllItem = checkboxCourseItem.length ===  $('input[name="courseIds[]"]:checked').length
+        //click checkboxproductItem
+        checkboxproductItem.change(function(){
+          var isCheckedAllItem = checkboxproductItem.length ===  $('input[name="productIds[]"]:checked').length
           checkboxAll.prop('checked', isCheckedAllItem)
           renderapplySubmitBtn()
-        })    
-
+        })
+        
 
         //bật / tắt applySubmitBtn
         function renderapplySubmitBtn(){
-          var checkedCount = $('input[name="courseIds[]"]:checked').length
+          var checkedCount = $('input[name="productIds[]"]:checked').length
           if(checkedCount > 0){
             applySubmitBtn.attr('disabled', false); // or: applySubmitBtn.removeAttr('disabled')
           }else{
@@ -164,6 +173,3 @@
     })
 
 </script>
-
-
-{{!-- khi bấm submit thì sẽ lấy hết giá trị của attribute NAME và giá trị của attribute VALUE có trong thẻ form( input, select, option, textarea...) --}}

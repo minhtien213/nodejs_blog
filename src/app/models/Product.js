@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 // const slug = require('mongoose-slug-generator') //tự động tạo slug
-const slug = require('mongoose-slug-updater') //tự động tạo slug
-const mongooseDelete = require('mongoose-delete') 
+const slug = require('mongoose-slug-updater') //tự động tạo slugconst 
+mongooseDelete = require('mongoose-delete') 
                 //tạo thùng rác khi xóa(khi tạo mới document thì sẽ tự thêm deleted: false)
                 //khi xóa mềm sẽ là deleted: true
                 
-const CourseSchema = new Schema({
+const ProductSchema = new Schema({
     name: { type: String, require: true},
     description: { type: String},
     images: [{ type: String, required: true }],
@@ -18,7 +18,7 @@ const CourseSchema = new Schema({
 
 //custom query helpers
     //tạo phương thức sort 
-    CourseSchema.query.sortable = function(req){
+    ProductSchema.query.sortable = function(req){
         //check url nếu có _sort thì sắp xếp lại data trước khi render
         if(req.query.hasOwnProperty('_sort')){
             const isValidType = ['asc', 'desc'].includes(req.query.type) //ngăn người dùng cố tình nhập type khác trên URL
@@ -32,8 +32,8 @@ const CourseSchema = new Schema({
 
 // Add plugins
 mongoose.plugin(slug)
-CourseSchema.plugin(mongooseDelete, {
+ProductSchema.plugin(mongooseDelete, {
     overrideMethods: 'all',
     deletedAt : true,
 })
-module.exports = mongoose.model('Course', CourseSchema)
+module.exports = mongoose.model('Product', ProductSchema)
