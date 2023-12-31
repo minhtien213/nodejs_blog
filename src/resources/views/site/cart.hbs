@@ -1,21 +1,23 @@
 
+<a href="/"><< Tiếp tục mua sắm</a>
     <div class="row">
         {{#each cartItems}}
-            <div class="card mr-auto mb-4" style="max-width: 540px;">
+            <div class="card mr-auto mb-4 mt-4" style="max-width: 540px;">
               <div class="row g-0">
                 <div class="col-md-4">
-                  <a href="/products/{{this.products.slug}}">
-                    <img src="{{lookup this.products.images 0}}" class="img-fluid rounded-start" alt="{{this.products.name}}">
+                  <a href="/products/{{this.product.slug}}">
+                    <img src="{{lookup this.product.images 0}}" class="img-fluid rounded-start" alt="{{this.products.name}}">
                   </a>
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
-                    <a href="/products/{{this.products.slug}}">
-                      <h5 class="card-title">{{this.products.name}}</h5>
+                    <a href="/products/{{this.product.slug}}">
+                      <h5 class="card-title">{{this.product.name}}</h5>
                     </a>
-                    <p class="card-text">{{this.products.description}}</p>
+                    <p class="card-text">{{this.product.description}}</p>
                     <small class="card-text"><p class="text-body-secondary">Ngày thêm: {{this.addedAt}}</p></small>
-                    <button type="submit" id="remove_cart" class="btn btn-primary" data-product-id="{{this.products._id}}">Xóa khỏi giỏ hàng</button>
+                    <button type="submit" id="remove_cart" class="btn btn-primary" data-product-id="{{this.product._id}}">Xóa khỏi giỏ hàng</button>
+                    <button type="submit" id="order" class="btn btn-success" data-product-id="{{this.product._id}}">Mua ngay</button>
                   </div>
                 </div>
               </div>

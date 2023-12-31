@@ -15,7 +15,7 @@ const AccountSchema = new Schema({
     address: { type: String, default: '' },
     phone: {type: Number, default: '' },
     cart: [{
-        products: { type: Schema.Types.ObjectId, ref: 'Product' },
+        product: { type: Schema.Types.ObjectId, ref: 'Product' },
         // quantity: { type: Number},
         addedAt: { type: String },
       }], 

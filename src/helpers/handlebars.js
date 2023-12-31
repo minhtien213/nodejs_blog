@@ -68,21 +68,40 @@ module.exports = {
     loadCommentForm(account, product){
         if(account){
             return `<form method="POST" action="/comment/${product._id}/create-comment" class="comment_form">
-                        <input type="text" class="comment_input" name="content" data-productId="${product._id}" required>
-                        <button type="submit" class="commnet_btn">Đăng</button>
-                    </form>
-                    <div class="comment_block">
-                        {{!-- render comments --}}
-                    </div>`
+                        <input type="text" class="form-control comment_input" name="content" required>
+                        <button type="submit" class="btn btn-primary commnet_btn btn-sm mt-2">Đăng</button>
+                    </form>`
         }else{
             return `<form method="POST" action="/comment/${product._id}/create-comment" class="comment_form" hidden>
-                        <input type="text" class="comment_input" name="content" data-productId="${product._id}" required>
-                        <button type="submit" class="commnet_btn">Đăng</button>
+                        <input type="text" class="form-control comment_input" name="content" required>
+                        <button type="submit" class="btn btn-primary commnet_btn btn-sm mt-2">Đăng</button>
                     </form>
-                    <p>Đăng nhập để bình luận. <a id="nav_login_btn" href="#">Login</a></p>
-                    <div class="comment_block">
-                        {{!-- render comments --}}
-                    </div>`
+                    <p>Đăng nhập để bình luận. <a id="nav_login_btn" href="#">Login</a></p>`
+        }
+    },
+
+    disabledAddCartBtn(account, product){
+        if(account){
+            // Mặc định trạng thái của sản phẩm chưa có trong giỏ hàng
+            let productInCart = false;
+    
+            // Lặp qua mảng cart để tìm sản phẩm với _id tương ứng
+            for (const cartItem of account.cart) {
+                // Kiểm tra xem productId có tồn tại trong bất kỳ đối tượng cart nào không
+                if (cartItem.product.equals(product._id)) {
+                        // Nếu sản phẩm đã có trong giỏ hàng, đặt trạng thái là true và thoát khỏi vòng lặp
+                        productInCart = true;
+                        break;
+                }
+            }
+            // Dựa vào trạng thái để trả về giá trị tương ứng
+            if (productInCart) {
+                return `<button type="submit" id="add_cart" class="btn btn-primary" data-product-id="${product._id}" disabled>Đã có trong giỏ hàng</button>`
+            } else {
+                return `<button type="submit" id="add_cart" class="btn btn-primary" data-product-id="${product._id}">Thêm vào giỏ hàng</button>`
+            }
+        }else{
+            return `<button type="submit" id="add_cart" class="btn btn-primary" data-product-id="${product._id}">Thêm vào giỏ hàng</button>`
         }
     }
     

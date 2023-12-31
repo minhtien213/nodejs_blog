@@ -1,9 +1,19 @@
 
+<style>
+    .listImgs_img{
+        border-radius: 5px;
+        margin: 0 3px;
+        max-width: 30px;
+        max-height: 30px;
+        object-fit: cover;
+    }
+</style>
+
 
 <form name="container-form" method="POST" action="/products/handle-stored-form-actions">
 
    <div class="d-flex align-items-center justify-content-center">
-     <h3>Khóa học của tôi</h3> <span>({{ productsCount }})</span>
+     <h3>Sản phẩm của tôi</h3> <span>({{ productsCount }})</span>
       <a href="/me/trash/products" class="ml-auto">Thùng rác ({{deletedCount}})</a>
    </div>
 
@@ -30,8 +40,12 @@
                   STT
                 </th>
                 <th scope="col">
-                  Tên khóa học
+                  Tên sản phẩm
                   {{{sortable 'name' _sort}}}
+                </th>
+                <th scope="col">
+                  Ảnh sản phẩm
+                  {{{sortable 'images' _sort}}}
                 </th>
                 <th scope="col">
                   Thời gian tạo
@@ -50,6 +64,11 @@
                 </td>
                 <th scope="row">{{stt @index 1}}</th>
                 <td>{{this.name}}</td>
+                <td>
+                  {{#each this.images}}
+                      <img src="../{{this}}" class="img-fluid rounded-start listImgs_img" alt="{{../name}}">
+                  {{/each}}
+                </td>
                 <td>{{this.createdAt}}</td>
                 <td>
                     <a href="/products/{{this._id}}/edit" class="btn btn-link">Sửa</a>
@@ -59,8 +78,8 @@
             {{else}}
               <tr>
                 <td colspan="5" class="text-center">
-                  Bạn chưa đăng khóa học nào.
-                  <a href="/products/create">Đăng khóa học</a>
+                  Bạn chưa có sản phẩm nào.
+                  <a href="/products/create">Thêm sản phẩm</a>
                 </td>
               </tr>
             {{/each}}

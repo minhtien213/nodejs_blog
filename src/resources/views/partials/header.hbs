@@ -29,7 +29,8 @@
 
 
   <nav class=" navbar navbar-expand-md navbar-expand-sm bg-dark fixed-menu fixed-top">
-    <a class="navbar-brand ml-4" href="/">Home</a>
+    <a class="navbar-brand ml-4" href="/"><img src="../images/logo.png" style="border:1px solid #e24343; border-radius: 50%; width: 40px; height: 40px"></a>
+    
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -47,8 +48,8 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" id="profile" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {{#if account}}
-              <img src="../{{lookup account.images 0}}" style="width: 30px; height: 30px; border-radius: 50%;">
               {{#if account.images}}
+                <img src="../{{lookup account.images 0}}" style="width: 30px; height: 30px; border-radius: 50%;">
               {{/if}}
               {{account.name}}
             {{else}}

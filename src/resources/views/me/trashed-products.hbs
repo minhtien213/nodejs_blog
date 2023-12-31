@@ -1,7 +1,7 @@
 <form name="container-form" method="POST" action="/products/handle-trash-form-actions">
    <div class="d-flex align-items-center justify-content-center">
-     <h3>Khóa học đã xóa</h3> <span>({{ deletedCount }})</span>
-    <a href="/me/stored/products" class="ml-auto">Danh sách khóa học ({{productsCount}})</a>
+     <h3>Sản phẩm đã xóa</h3> <span>({{ deletedCount }})</span>
+    <a href="/me/stored/products" class="ml-auto">Danh sách sản phẩm({{productsCount}})</a>
    </div>
 
    <div class="d-flex align-items-center justify-content-center">
@@ -29,7 +29,7 @@
                   STT
                 </th>
                 <th scope="col">
-                  Tên khóa học
+                  Tên sản phẩm
                   {{{sortable 'name' _sort}}}
                 </th>
                 <th scope="col">
@@ -59,7 +59,7 @@
               <tr>
                 <td colspan="5" class="text-center">
                   Thùng rác trống.
-                  <a href="/me/stored/products">Danh sách khóa học</a>
+                  <a href="/me/stored/products">Danh sách sản phẩm</a>
                 </td>
               </tr>
             {{/each}}

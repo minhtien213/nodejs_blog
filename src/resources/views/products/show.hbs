@@ -11,7 +11,7 @@
         margin: 0 5px;
         max-width: 35%;
         max-height: 35%;
-        object-fit: cover;
+        object-fit: cover; 
     }
 </style>
 
@@ -22,20 +22,22 @@
     </div>
     <div class="col-lg-6">
         <h2>{{product.name}}</h2>
-        <img src="{{lookup product.images 0}}" class="img-fluid rounded-start larger_img" style="width: 90%; max-height: 250px; object-fit: cover;  margin: 0 5px auto; border: 2px solid #419edc;"  alt="{{this.name}}">
-        
+        <img src="{{lookup product.images 0}}" class="img-fluid rounded-start larger_img" style="width: 90%; max-height: 230px; object-fit: cover;  margin: 0 5px auto; border: 2px solid #419edc;"  alt="{{this.name}}">
         <div class="listImgs">
             {{#each product.images}}
                 <img src="{{this}}" class="img-fluid rounded-start listImgs_img" alt="{{../name}}">
             {{/each}}
         </div>
-        <button type="submit" id="add_cart" class="btn btn-primary" data-product-id="{{product._id}}">Thêm vào giỏ hàng</button>
-        <button type="submit" id="order" class="btn btn-primary" data-product-id="{{product._id}}">Mua ngay</button>
-        <p>{{product.description}}</p>
+        {{{disabledAddCartBtn account product}}}
+        <button type="submit" id="order" class="btn btn-success" data-product-id="{{product._id}}">Mua ngay</button>
+        <p class="mt-4">Mô tả sản phẩm: {{product.description}}</p>
     </div>
     <div class="col-lg-4">
         <h3>Comment</h3>    
         {{{loadCommentForm account product}}}
+        <div class="comment_block" data-productId="{{product._id}}" data-accountId="{{account._id}}">
+            {{!-- render comments --}}
+        </div>
     </div>
 </div>
 
@@ -50,7 +52,8 @@
         const comment_block = document.querySelector('.comment_block')
 
         function loadComments(){
-            const productId = document.querySelector(".comment_input").getAttribute('data-productId')
+            const productId = comment_block.getAttribute('data-productId')
+            const accountId = comment_block.getAttribute('data-accountId')
             const url = `/comment/${productId}/render-comment`
             fetch(url)
                 .then((response) => {
@@ -61,11 +64,11 @@
                         comment_block.innerHTML = ''
                         var htmls = comments.map((comment) => {
                             return `<form method="POST" action="/comment/${comment._id}?_method=DELETE" class="comment_content mt-4">
-                                        <h5>${comment.account.name}</h5>
+                                        <h6 style="display: list-item">${comment.account.name}</h6>
                                         <p>${comment.content}</p>
-                                        <small>Ngày: ${comment.addedAt}</small>
-                                        {{!-- <button class="deleteCmt" type="submit">Xóa</button>
-                                        <button id="replyCmt" type="button">Trả lời</button> --}}
+                                        <small style = "font-style: italic;">Ngày: ${comment.addedAt}</small>
+                                        ${accountId === comment.account._id ? '<button class="btn btn-link btn-sm ml-2 deleteCmt" type="submit">Xóa</button>' : ''}
+                                        {{!-- <button id="replyCmt" type="button">Trả lời</button> --}}
                                     </form>` 
                         })
                         comment_block.innerHTML = htmls.join("")
