@@ -3,14 +3,14 @@ const moment = require('moment')
 const mongoose = require('mongoose')
 const Account = require("../models/Account")
 const { mongooseToObject } = require('../../util/mongoose')
-const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
+const checkPermissionMiddlewares = require('../middlewares/checkPermissionMiddlewares')
 
 
 class CartController {
 
     //[GET] /cart/:id
     cart(req, res, next) {
-      checkLoginMiddlewares(req, res, [0, 1], (account) => {
+      checkPermissionMiddlewares(req, res, [0, 1], (account) => {
         Account.findById({ _id: account._id}).populate({ path: 'cart.product', model: 'Product' })
           .then((accountWithCart) =>{
             res.render('site/cart' , { 
@@ -25,7 +25,7 @@ class CartController {
 
     //[PUT] /cart/:id
     addCart(req, res, next) {
-      checkLoginMiddlewares(req, res, [0, 1], (account) => {
+      checkPermissionMiddlewares(req, res, [0, 1], (account) => {
         // Tạo một đối tượng mới để thêm vào cart
         const productId = req.params.id
         const cartItem = {
@@ -44,7 +44,7 @@ class CartController {
 
     // [DELETE] /cart/:id
     removeCart(req, res, next) {
-      checkLoginMiddlewares(req, res, [0, 1], (account) => {
+      checkPermissionMiddlewares(req, res, [0, 1], (account) => {
         const productIdToRemove = req.params.id;
 
         Account.findOneAndUpdate(

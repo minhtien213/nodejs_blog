@@ -5,15 +5,15 @@ const Product = require("../models/Product")
 const Account = require("../models/Account")
 const Comment = require("../models/Comment")
 const { mutipleMongooseToObject, mongooseToObject } = require("../../util/mongoose")
-const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
-const checkUser = require('../middlewares/checkUser')
+const checkPermissionMiddlewares = require('../middlewares/checkPermissionMiddlewares')
+const checkUserMiddleware = require('../middlewares/checkUserMiddleware')
 
 
 class CommentController {
 
     //[POST] /:id/create-comment
     create(req, res, next) {
-      checkLoginMiddlewares(req, res, [0, 1], (account) => {
+      checkPermissionMiddlewares(req, res, [0, 1], (account) => {
         const productId = req.params.id
         const accountId  = account._id
         const comment = new Comment({
@@ -30,7 +30,7 @@ class CommentController {
 
     //[GET] /:id/render-comment
     render(req, res, next){
-      checkUser(req, res)
+      checkUserMiddleware(req, res)
         .then((account) => {
           const productId = req.params.id
           Comment.find({product: productId}).populate('account', 'name images')

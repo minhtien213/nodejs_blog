@@ -2,16 +2,16 @@
 
 const Product = require("../models/Product")
 const { mongooseToObject } = require("../../util/mongoose")
-const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
-const multerMiddleware = require('../middlewares/imageUploadHandleMiddlewares')
-const checkUser = require('../middlewares/checkUser')
+const checkPermissionMiddlewares = require('../middlewares/checkPermissionMiddlewares')
+const multerMiddleware = require('../middlewares/multerMiddleware')
+const checkUserMiddleware = require('../middlewares/checkUserMiddleware')
 
 
 class ProductsController {
 
     //[GET] /products/:slug
     show(req, res, next) {
-      checkUser(req, res)
+      checkUserMiddleware(req, res)
         .then(account => {
           Product.findOne({slug: req.params.slug})
           .then(product => res.render('products/show', {
@@ -26,7 +26,7 @@ class ProductsController {
 
     //[GET] /products/create 
     create(req, res, next) {
-      checkLoginMiddlewares(req, res, [0], (account) => {
+      checkPermissionMiddlewares(req, res, [0], (account) => {
         res.render('products/create' , { 
           account: mongooseToObject(account),
           cartItemCount: account ?  account.cart.length : '' 
@@ -50,7 +50,7 @@ class ProductsController {
 
     //[GET] /products/:id/edit 
     edit(req, res, next) {
-      checkLoginMiddlewares(req, res, [0], (account) => {
+      checkPermissionMiddlewares(req, res, [0], (account) => {
         Product.findById(req.params.id)
           .then(product => res.render('products/edit', {
             product: mongooseToObject(product),
@@ -65,12 +65,22 @@ class ProductsController {
     update(req, res, next) {
       // Sử dụng Multer Middleware để xử lý tệp ảnh (nếu có)
       multerMiddleware(req, res, () => {
-        // Nếu có files đã tải lên, sử dụng đường dẫn từ req.files
-        req.body.images = req.files ? req.files.map((file) => 
-        file.path.replace(/\\/g, '/').replace('src/public', '..')) : null
-        Product.updateOne( {_id: req.params.id}, req.body) //{_id: req.params.id}: id chỉnh sửa, req.body: object muốn sửa
-        .then(() => res.redirect('/me/stored/products'))
-        .catch(next)
+        // Kiểm tra xem có files được tải lên hay không
+        if (!req.files) {
+          // Nếu không có files, chỉ cập nhật các trường khác không liên quan đến ảnh
+          Product.updateOne( {_id: req.params.id}, req.body) //{_id: req.params.id}: id chỉnh sửa, req.body: object muốn sửa
+            .then(() => res.redirect('/me/stored/products'))
+            .catch(next)
+        } else {
+            // Nếu có files đã tải lên, sử dụng đường dẫn từ req.files
+            req.body.images = req.files ? req.files.map((file) => 
+            file.path.replace(/\\/g, '/').replace('src/public', '..')) : null
+            Product.updateOne( {_id: req.params.id}, req.body) //{_id: req.params.id}: id chỉnh sửa, req.body: object muốn sửa
+              .then(() => res.redirect('/me/stored/products'))
+              .catch(next)
+        }
+
+
       })
     }
 

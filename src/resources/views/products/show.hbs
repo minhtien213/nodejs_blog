@@ -17,23 +17,25 @@
 
 
 <div class="row">
-    <div class="col-lg-2">
-        <h4 style="border-right: 3px solid #201e1e; height: 100%">Danh mục</h4>
-    </div>
     <div class="col-lg-6">
-        <h2>{{product.name}}</h2>
-        <img src="{{lookup product.images 0}}" class="img-fluid rounded-start larger_img" style="width: 90%; max-height: 230px; object-fit: cover;  margin: 0 5px auto; border: 2px solid #419edc;"  alt="{{this.name}}">
+        <img src="{{lookup product.images 0}}" class="img-fluid rounded-start larger_img" 
+            style="width: 90%; height: 400px; object-fit: cover;  margin: 0 5px auto; border: 2px solid #419edc; border-radius: 5px;"  alt="{{this.name}}"
+        >
         <div class="listImgs">
             {{#each product.images}}
                 <img src="{{this}}" class="img-fluid rounded-start listImgs_img" alt="{{../name}}">
             {{/each}}
         </div>
-        {{{disabledAddCartBtn account product}}}
-        <button type="submit" id="order" class="btn btn-success" data-product-id="{{product._id}}">Mua ngay</button>
-        <p class="mt-4">Mô tả sản phẩm: {{product.description}}</p>
     </div>
     <div class="col-lg-4">
-        <h3>Comment</h3>    
+        <small>Tên sản phẩm:</small><h4>{{product.name}}</h4>
+        <small>Mô tả sản phẩm:</small><p>{{product.description}}</p>
+        <small>Giá sản phẩm:</small><p>{{product.price}}$</p>
+        <button type="submit" id="order" class="btn btn-success" data-product-id="{{product._id}}">Mua ngay</button>
+        {{{disabledAddCartBtn account product}}}
+    </div>
+    <div class="col-lg-2">
+        <h5>Đánh giá sản phẩm</h5>    
         {{{loadCommentForm account product}}}
         <div class="comment_block" data-productId="{{product._id}}" data-accountId="{{account._id}}">
             {{!-- render comments --}}
@@ -73,7 +75,7 @@
                         })
                         comment_block.innerHTML = htmls.join("")
                     }else{
-                        comment_block.innerHTML = `<small>Chưa có bình luận cho sản phẩm này.</small>`
+                        comment_block.innerHTML = `<small>Chưa có đánh giá cho sản phẩm này.</small>`
                     }
                     
                 })

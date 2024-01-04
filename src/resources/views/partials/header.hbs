@@ -29,7 +29,7 @@
 
 
   <nav class=" navbar navbar-expand-md navbar-expand-sm bg-dark fixed-menu fixed-top">
-    <a class="navbar-brand ml-4" href="/"><img src="../images/logo.png" style="border:1px solid #e24343; border-radius: 50%; width: 40px; height: 40px"></a>
+    <a class="navbar-brand ml-4" href="/"><img src="/images/logo.png" style="border:1px solid #e24343; border-radius: 50%; width: 40px; height: 40px; object-fit: cover;"></a>
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -104,18 +104,23 @@
         fetch(url)
           .then(response => {return response.json()})
           .then(datas => {
-            //console.log(datas)
-            search_results_block.innerHTML = ''
-            var htmls = datas.map(function(item){
-              return `<a href="/products/${item.slug}" class="result_block">
-                        <div class="card-body result_item">
-                          <p class="card-title">${item.name}</p>
-                          <small class="card-text">${item.description}</small>
-                        </div>
-                      </a>`
-            })
-            search_results_block.innerHTML = htmls.join('')
+            if (datas && datas.length > 0) {
+                search_results_block.innerHTML = ''
+              var htmls = datas.map(function(item){
+                return `<a href="/products/${item.slug}" class="result_block">
+                          <div class="card-body result_item">
+                            <p class="card-title">${item.name}</p>
+                            <small class="card-text">${item.description}</small>
+                          </div>
+                        </a>`
+              })
+              search_results_block.innerHTML = htmls.join('')
+            }else{
+              search_results_block.innerHTML = `<smaill style="color: #fff;">Không có kết quả phù hợp</smaill>`
+            }
+            
           })
+          .catch(err => {console.error(err)})
       }else{
         searchBtn.disabled = true
         search_results_block.style.display = 'none'

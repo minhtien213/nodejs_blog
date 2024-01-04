@@ -1,11 +1,11 @@
 const { mongooseToObject } = require("../../util/mongoose")
-const checkUser = require('../middlewares/checkUser')
+const checkUserMiddleware = require('../middlewares/checkUserMiddleware')
 
 class ErrorController {
 
     //[GET] /error/errorAuth
     errorAuth(req, res, next) {
-      checkUser(req, res)
+      checkUserMiddleware(req, res)
         .then(account => {
           res.render('error/errorAuth', {
             account: mongooseToObject(account),

@@ -76,7 +76,7 @@ module.exports = {
                         <input type="text" class="form-control comment_input" name="content" required>
                         <button type="submit" class="btn btn-primary commnet_btn btn-sm mt-2">Đăng</button>
                     </form>
-                    <p>Đăng nhập để bình luận. <a id="nav_login_btn" href="#">Login</a></p>`
+                    <p>Đăng nhập để viết đánh giá. <a id="nav_login_btn" href="#">Login</a></p>`
         }
     },
 

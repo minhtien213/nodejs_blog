@@ -3,16 +3,16 @@ const Product = require("../models/Product")
 const Account = require("../models/Account")
 const { mutipleMongooseToObject, mongooseToObject } = require("../../util/mongoose")
 const paginationMiddlewares = require('../middlewares/paginationMiddlewares')
-const multerMiddleware = require('../middlewares/imageUploadHandleMiddlewares')
-const checkUser = require('../middlewares/checkUser')
-const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
+const multerMiddleware = require('../middlewares/multerMiddleware')
+const checkUserMiddleware = require('../middlewares/checkUserMiddleware')
+const checkPermissionMiddlewares = require('../middlewares/checkPermissionMiddlewares')
 
 
 class SiteController {
 
     index(req, res, next) {
       const {currentPage, skipPage} = paginationMiddlewares(req, 4) // 3 - pageSize
-      checkUser(req, res)
+      checkUserMiddleware(req, res)
           .then(account => {
               Promise.all([
                 Product.find({}).skip(skipPage).limit(4),
@@ -46,7 +46,7 @@ class SiteController {
 
     //[GET] /search-results
     searchResutls(req, res, next) {
-        checkUser(req, res)
+        checkUserMiddleware(req, res)
         .then(account => {
             const keySearch = req.query.keysearch
             const resultSize = parseInt(req.query.result) || 2
@@ -77,7 +77,7 @@ class SiteController {
 
     //[GET] /my-account
     myAccount(req, res, next) {
-      checkLoginMiddlewares(req, res, [0, 1], (account) => {
+      checkPermissionMiddlewares(req, res, [0, 1], (account) => {
         res.render('site/myAccount', {
           account: mongooseToObject(account),
           cartItemCount: account ?  account.cart.length : '' 
@@ -87,17 +87,25 @@ class SiteController {
 
     //[PUT] /my-account
     myAccountUpdate(req, res, next){
-      checkUser(req, res)
+      checkUserMiddleware(req, res)
         .then(account => {
             // Sử dụng Multer Middleware để xử lý tệp ảnh (nếu có)
             multerMiddleware(req, res, () => {
-              console.log(req.files)
-              // Nếu có files đã tải lên, sử dụng đường dẫn từ req.files
-              req.body.images = req.files ? req.files.map((file) => 
-              file.path.replace(/\\/g, '/').replace('src/public', '..')) : null
-              Account.updateOne( {_id: account._id}, req.body) //{_id: account._id}: id chỉnh sửa, req.body: object muốn sửa
-              .then(() => res.redirect('back'))
-              .catch(next)
+              // Kiểm tra xem có files được tải lên hay không
+              if (!req.files) {
+                // Nếu không có files, chỉ cập nhật các trường khác không liên quan đến ảnh
+                Account.updateOne({_id: account._id}, req.body)
+                    .then(() => res.redirect('back'))
+                    .catch(next);
+              } else {
+                  // Nếu có files đã tải lên, sử dụng đường dẫn từ req.files
+                  req.body.images = req.files ? req.files.map((file) => 
+                  file.path.replace(/\\/g, '/').replace('src/public', '..')) : null
+                  // Nếu có files, cập nhật cả trường ảnh và các trường khác
+                  Account.updateOne({_id: account._id}, req.body)
+                      .then(() => res.redirect('back'))
+                      .catch(next);
+              }
             })
         })
         .catch(next)

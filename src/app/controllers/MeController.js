@@ -2,13 +2,13 @@
 const Product = require("../models/Product");
 const { mutipleMongooseToObject, mongooseToObject } = require("../../util/mongoose")
 const paginationMiddlewares = require('../middlewares/paginationMiddlewares')
-const checkLoginMiddlewares = require('../middlewares/checkLoginMiddlewares')
+const checkPermissionMiddlewares = require('../middlewares/checkPermissionMiddlewares')
 
 class meController {
 
     // [GET] /me/stored/products
     storedProducts(req, res, next) {
-      checkLoginMiddlewares(req, res, [0], (account) => { //truyền array roles - callback thay cho next()
+      checkPermissionMiddlewares(req, res, [0], (account) => { //truyền array roles - callback thay cho next()
         //middlewares pagination - lấy ra 2 giá trị currentPage, skipPage được trả về từ hàm paginationMiddlewares
         const {currentPage, skipPage} = paginationMiddlewares(req, 3) // 3 - pageSize
         Promise.all([
@@ -33,7 +33,7 @@ class meController {
     
     // [GET] /me/trash/products
     trashProducts(req, res, next) {
-      checkLoginMiddlewares(req, res, [0], (account) => {
+      checkPermissionMiddlewares(req, res, [0], (account) => {
         //middlewares pagination - lấy ra 2 giá trị currentPage, skipPage được trả về từ hàm paginationMiddlewares
         const {currentPage, skipPage} = paginationMiddlewares(req, 3) // 3 - pageSize
         Promise.all([

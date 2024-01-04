@@ -3,14 +3,14 @@ require('dotenv').config()
 const Account = require("../models/Account")
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
-const checkUser = require('../middlewares/checkUser')
+const checkUserMiddleware = require('../middlewares/checkUserMiddleware')
 const { mongooseToObject } = require('../../util/mongoose')
 
 class AuthController {
 
   // [GET] /auth/login
   login(req, res, next) {
-    checkUser(req, res)
+    checkUserMiddleware(req, res)
       .then(account => {
           res.render('auth/login', {account: mongooseToObject(account)})
       })
@@ -19,7 +19,7 @@ class AuthController {
 
   // [GET] /auth/register
   register(req, res, next) {
-    checkUser(req, res)
+    checkUserMiddleware(req, res)
       .then(username => {
           res.render('auth/register', {username})
       })
@@ -96,7 +96,7 @@ class AuthController {
 
   //[GET] /auth/reset-password
   resetPassword(req, res, next) {
-    checkUser(req, res)
+    checkUserMiddleware(req, res)
       .then(account => {
           res.render('auth/resetPassword', {account: mongooseToObject(account)})
       })

@@ -48,8 +48,8 @@
                   {{{sortable 'images' _sort}}}
                 </th>
                 <th scope="col">
-                  Thời gian tạo
-                  {{{sortable 'createdAt' _sort}}}
+                  Giá sản phẩm
+                  {{{sortable 'price' _sort}}}
                 </th>
                 <th scope="col">Tùy chọn</th>
             </tr>
@@ -69,7 +69,7 @@
                       <img src="../{{this}}" class="img-fluid rounded-start listImgs_img" alt="{{../name}}">
                   {{/each}}
                 </td>
-                <td>{{this.createdAt}}</td>
+                <td>{{this.price}}$</td>
                 <td>
                     <a href="/products/{{this._id}}/edit" class="btn btn-link">Sửa</a>
                     <a href="" class="btn btn-link" data-id="{{this._id}}" data-bs-toggle="modal" data-bs-target="#delete-product-modal">Xóa</a>

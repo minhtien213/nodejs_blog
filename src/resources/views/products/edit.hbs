@@ -1,19 +1,72 @@
 <div>
-    <h3>Cập nhật khóa học</h3>
-    <form method="POST" action="/products/{{product._id}}?_method=PUT" enctype="multipart/form-data">
+    <h3>Cập nhật sản phẩm</h3>
+    <form method="POST" action="/products/{{product._id}}?_method=PUT">
         <div class="form-group mt-4">
-            <label for="name" class="form-label">Tên khóa học:</label>
+            <label for="name" class="form-label">Tên sản phẩm:</label>
             <input type="text" class="form-control" value="{{product.name}}" id="name" name="name">
         </div>
         <div class="form-group">
-            <label for="description" class="form-label">Mô tả:</label>
-            <textarea class="form-control" id="description" name="description">{{product.description}}</textarea>
+            <label for="price" class="form-label">Giá sản phẩm:</label>
+            <input type="text" class="form-control" value="{{product.price}}" id="price" name="price">
         </div>
         <div class="form-group">
-            <label for="images" class="form-label">Images:</label>
-            <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple required>
+            <label for="description" class="form-label">Mô tả sản phẩm:</label>
+            <textarea class="form-control" id="description" name="description">{{product.description}}</textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Lưu lại</button>
+        <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+    </form>
+
+    <form method="POST" action="/products/{{product._id}}?_method=PUT" enctype="multipart/form-data">
+        <div class="form-group mt-4">
+            <label for="images" class="form-label">Hình ảnh sản phẩm:</label>
+            <div id="imageContainer">
+                <!-- Thẻ div này sẽ chứa các thẻ img -->
+                {{#each product.images}}
+                    <img id="previewImage" src="../{{this}}" style="width: 30px; height: 30px; margin: 3px 5px; border-radius: 3px" >
+                {{/each}}
+            </div>
+            <input onchange="displaySelectedImages()" type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
+        </div>
+        <button type="submit" class="btn btn-primary">Lưu hình ảnh</button>
     </form>
 </div>
+
+
+<script>
+        function displaySelectedImages() {
+            var input = document.getElementById('images');
+            var imageContainer = document.getElementById('imageContainer');
+            // Xóa các thẻ img cũ
+            imageContainer.innerHTML = '';
+            // Kiểm tra xem đã chọn ít nhất một file chưa
+            if (input.files.length > 0) {
+                displayImage(0); // Bắt đầu từ tệp đầu tiên
+            }
+        }
+        function displayImage(index) {
+            var input = document.getElementById('images');
+            var imageContainer = document.getElementById('imageContainer');
+            if (index < input.files.length) {
+                var reader = new FileReader();
+                var imgElement = document.createElement('img');
+                // Object assignment for styles
+                Object.assign(imgElement.style, {
+                    width: '30px',
+                    height: '30px',
+                    margin: '2px 5px',
+                    borderRadius: '3px',
+                    objectFit: 'cover',
+                });
+                imgElement.alt = 'Image ' + (index + 1);
+            reader.onload = function(e) {
+                imgElement.src = e.target.result;
+                // Thêm thẻ img vào container
+                imageContainer.appendChild(imgElement);
+                // Hiển thị ảnh tiếp theo
+                displayImage(index + 1);
+            };
+            reader.readAsDataURL(input.files[index]);
+            }
+        }
+    </script>
 

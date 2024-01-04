@@ -8,6 +8,7 @@ mongooseDelete = require('mongoose-delete')
                 
 const ProductSchema = new Schema({
     name: { type: String, require: true},
+    price: { type: Number,},
     description: { type: String},
     images: [{ type: String, required: true }],
     slug: { type: String, slug: "name", unique: true } // unique: true: tự động tạo slug khi đặt trùng name
