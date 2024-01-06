@@ -7,7 +7,6 @@ const multerMiddleware = require('../middlewares/multerMiddleware')
 const checkUserMiddleware = require('../middlewares/checkUserMiddleware')
 const checkPermissionMiddlewares = require('../middlewares/checkPermissionMiddlewares')
 
-
 class SiteController {
 
     index(req, res, next) {

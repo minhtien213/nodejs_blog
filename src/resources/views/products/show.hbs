@@ -13,11 +13,18 @@
         max-height: 35%;
         object-fit: cover; 
     }
+
+    .comment_content{
+        background-color: rgb(243, 242, 242);
+        padding: 5px 10px;
+        border-radius: 3px;
+        margin: 10px 0;
+    }
 </style>
 
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-8">
         <img src="{{lookup product.images 0}}" class="img-fluid rounded-start larger_img" 
             style="width: 90%; height: 400px; object-fit: cover;  margin: 0 5px auto; border: 2px solid #419edc; border-radius: 5px;"  alt="{{this.name}}"
         >
@@ -34,10 +41,12 @@
         <button type="submit" id="order" class="btn btn-success" data-product-id="{{product._id}}">Mua ngay</button>
         {{{disabledAddCartBtn account product}}}
     </div>
-    <div class="col-lg-2">
-        <h5>Đánh giá sản phẩm</h5>    
+</div>
+<div class="row mb-4">
+    <div class="col-lg-12">
+        <h5>Đánh giá sản phẩm <small class="count_cmts"></small> </h5>    
         {{{loadCommentForm account product}}}
-        <div class="comment_block" data-productId="{{product._id}}" data-accountId="{{account._id}}">
+        <div class="comment_block" style="width: 100%;" data-productId="{{product._id}}" data-accountId="{{account._id}}">
             {{!-- render comments --}}
         </div>
     </div>
@@ -49,10 +58,58 @@
 
 
 <script>
+    //add to cart
+    const add_cartsBtn = document.querySelectorAll('#add_cart')
+        if(add_cartsBtn){
+        add_cartsBtn.forEach(function(add_cartBtn){
+            add_cartBtn.addEventListener('click', function (e) {
+            e.preventDefault()
+            const productId = add_cartBtn.getAttribute('data-product-id')
+            const add_to_cart_form = document.querySelector('#add-to-cart-form')
+            add_to_cart_form.action = '/cart/' + productId + '?_method=PUT'
+            add_to_cart_form.submit()
+            })
+        })
+    }
+
+    //Click img in listImages
+    const listImgs_img = document.querySelectorAll('.listImgs_img')
+    const larger_img = document.querySelector('.larger_img')
+    listImgs_img.forEach(function(image){
+        image.addEventListener('click', function(){
+            larger_img.src = image.src
+        })
+    })
+
+    //login navigation
+    const nav_login_btn = document.querySelector('#nav_login_btn')
+    if(nav_login_btn){
+        nav_login_btn.addEventListener('click', function(){
+        document.cookie = 'previousPath=' + window.location.href + '; path=/'
+        window.location.href = 'http://localhost:3333/auth/login'
+        })
+    }
+    //handle replyCmt button
+    function replyCmtFunc(e) {
+        const repcmtParentBtn = e.getAttribute('data_cmtId')
+        const reply_comment_forms = document.querySelectorAll('.reply_comment_form')
+        reply_comment_forms.forEach((reply_comment_form) => {
+            const reply_comment_form_cmtId = reply_comment_form.getAttribute('data_cmtId')
+            if(repcmtParentBtn === reply_comment_form_cmtId){
+                if (reply_comment_form.classList.contains('d-none')) {
+                    reply_comment_form.classList.remove('d-none');
+                } else {
+                    reply_comment_form.classList.add('d-none');
+                }
+            }
+        })
+
+        
+    }
+
     document.addEventListener("DOMContentLoaded", function(){
         //Load comments
         const comment_block = document.querySelector('.comment_block')
-
         function loadComments(){
             const productId = comment_block.getAttribute('data-productId')
             const accountId = comment_block.getAttribute('data-accountId')
@@ -62,18 +119,40 @@
                     return response.json()
                 })
                 .then((comments) => {
+                    document.querySelector('.count_cmts').innerText = `( ${comments.length} đánh giá )`
                     if( Array.isArray(comments) && comments.length > 0){
-                        comment_block.innerHTML = ''
+                        comment_block.innerHTML = ''    
                         var htmls = comments.map((comment) => {
-                            return `<form method="POST" action="/comment/${comment._id}?_method=DELETE" class="comment_content mt-4">
-                                        <h6 style="display: list-item">${comment.account.name}</h6>
-                                        <p>${comment.content}</p>
-                                        <small style = "font-style: italic;">Ngày: ${comment.addedAt}</small>
-                                        ${accountId === comment.account._id ? '<button class="btn btn-link btn-sm ml-2 deleteCmt" type="submit">Xóa</button>' : ''}
-                                        {{!-- <button id="replyCmt" type="button">Trả lời</button> --}}
-                                    </form>` 
+                            // Render thông tin comment
+                            const commentHtml = `
+                                <form method="POST" action="/comment/${comment._id}?_method=DELETE" class="comment_content mt-2">
+                                    <h6>${comment.account.name}</h6>
+                                    <p>${comment.content}</p>
+                                    <small style="font-style: italic;">Ngày: ${comment.addedAt}</small>
+                                    <button onclick="replyCmtFunc(this)" class="btn btn-link btn-sm ml-2 replyCmtParent" type="button" data_cmtId ="${comment._id}">Trả lời</button>
+                                    ${accountId === comment.account._id ? '<button class="btn btn-link btn-sm deleteCmt" type="submit">Xóa</button>' : ''}
+                                </form>`
+
+                            // Render thông tin replys (nếu có)
+                            const replysHtml = comment.replys.map((reply) => `
+                                <form method="POST" action="/comment/reply/${comment._id}?replyCmtId=${reply._id}&_method=DELETE" class="reply_comments mt-2 ml-4">
+                                    <h6>${reply.account.name}</h6>
+                                    <p>${reply.replyContent}</p>
+                                    <small style="font-style: italic;">Ngày: ${reply.addedAt}</small>
+                                    ${accountId === reply.account._id ? '<button class="btn btn-link btn-sm deleteReplyCmt" type="submit">Xóa</button>' : ''}
+                                </form>`).join('')
+
+                            // Render form trả lời cho comment
+                            const replyFormHtml = `
+                                <form class="reply_comment_form mt-2 ml-4 d-none" data_cmtId ="${comment._id}"  method="POST" action="/comment/reply/${comment._id}?_method=PUT">
+                                    <input type="text" name="replyContent" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Trả lời</button>
+                                </form>`
+
+                            // Kết hợp tất cả các phần vào một HTML duy nhất cho comment
+                            return `${commentHtml} ${replysHtml} ${replyFormHtml}`
                         })
-                        comment_block.innerHTML = htmls.join("")
+                        comment_block.innerHTML = htmls.join("");
                     }else{
                         comment_block.innerHTML = `<small>Chưa có đánh giá cho sản phẩm này.</small>`
                     }
@@ -83,40 +162,7 @@
         }
 
         loadComments()
-
-
-        //add to cart
-        const add_cartsBtn = document.querySelectorAll('#add_cart')
-            if(add_cartsBtn){
-            add_cartsBtn.forEach(function(add_cartBtn){
-                add_cartBtn.addEventListener('click', function (e) {
-                e.preventDefault()
-                const productId = add_cartBtn.getAttribute('data-product-id')
-                const add_to_cart_form = document.querySelector('#add-to-cart-form')
-                add_to_cart_form.action = '/cart/' + productId + '?_method=PUT'
-                add_to_cart_form.submit()
-                })
-            })
-        }
-
-        //login navigation
-        const nav_login_btn = document.querySelector('#nav_login_btn')
-        if(nav_login_btn){
-            nav_login_btn.addEventListener('click', function(){
-            document.cookie = 'previousPath=' + window.location.href + '; path=/'
-            console.log('Cookie saved:', document.cookie)
-            window.location.href = 'http://localhost:3000/auth/login'
-            })
-        }
-
-        //Click listImages
-        const listImgs_img = document.querySelectorAll('.listImgs_img')
-        const larger_img = document.querySelector('.larger_img')
-        listImgs_img.forEach(function(image){
-            image.addEventListener('click', function(){
-                larger_img.src = image.src
-            })
-        })
+        
     })
 
 </script>

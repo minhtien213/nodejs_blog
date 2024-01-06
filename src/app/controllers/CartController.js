@@ -50,7 +50,7 @@ class CartController {
         Account.findOneAndUpdate(
           { _id: account._id },
           { $pull: { cart: { product: productIdToRemove } } },
-          { new: true } // Trả về tài liệu sau khi cập nhật
+          //{ new: true } // Trả về tài liệu sau khi cập nhật
         )
           .then(() => { res.redirect('back')})
           .catch(next)

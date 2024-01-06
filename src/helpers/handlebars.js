@@ -68,7 +68,7 @@ module.exports = {
     loadCommentForm(account, product){
         if(account){
             return `<form method="POST" action="/comment/${product._id}/create-comment" class="comment_form">
-                        <input type="text" class="form-control comment_input" name="content" required>
+                        <input type="text" class="form-control comment_input" name="content" required placeholder="đánh giá của ${account.name}...">
                         <button type="submit" class="btn btn-primary commnet_btn btn-sm mt-2">Đăng</button>
                     </form>`
         }else{

@@ -55,7 +55,7 @@
                         <img id="previewImage" src="{{lookup account.images 0}}" style="width: 95%; height: auto; max-height:200px; margin: 5px; border-radius: 3px; object-fit:cover" >
                     </label>
                 </div>                    
-                <input onchange="displaySelectedImages()" type="file" id="images" name="images" class="form-control" accept="image/*"/>
+                <input onchange="displaySelectedImages()" type="file" id="images" name="images" class="form-control" accept="image/*" required/>
                 <button type="submit" class="btn btn-primary btn-block mt-4">Lưu ảnh</button>
             </div>
         </form>

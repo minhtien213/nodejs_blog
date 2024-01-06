@@ -1,6 +1,7 @@
 
 
 const Product = require("../models/Product")
+const Comment = require("../models/Comment")
 const { mongooseToObject } = require("../../util/mongoose")
 const checkPermissionMiddlewares = require('../middlewares/checkPermissionMiddlewares')
 const multerMiddleware = require('../middlewares/multerMiddleware')
@@ -79,23 +80,26 @@ class ProductsController {
               .then(() => res.redirect('/me/stored/products'))
               .catch(next)
         }
-
-
       })
     }
 
-
     //[DELETE] /products/:id --> soft delete
     delete(req, res, next) {
-      Product.delete({_id: req.params.id}) //{_id: req.params.id}: id muốn xóa
-        .then(() => res.redirect('back')) //xóa xong chuyển lại trang trước đó
+      const productId = req.params.id
+      Comment.deleteMany({ product: { $in: productId} })
+        .then(() => {
+          Product.delete({_id: productId}) //{_id: req.params.id}: id muốn xóa
+            .then(() => res.redirect('back')) 
+            .catch(next)
+        })
         .catch(next)
     }
 
     //[Force DELETE] /products/:id/force --> hard delete
     forceDelete(req, res, next) {
-      Product.deleteOne({_id: req.params.id}) //{_id: req.params.id}: id muốn xóa
-        .then(() => res.redirect('back')) //xóa xong chuyển lại trang trước đó
+      const productId = req.params.id
+      Product.deleteOne({_id: productId}) //{_id: productId}: id muốn xóa
+        .then(() => res.redirect('back')) 
         .catch(next)
     }
 
@@ -111,7 +115,7 @@ class ProductsController {
       switch(req.body.action){
         case 'delete':
           Product.delete({ _id: { $in: req.body.productIds} }) //{_id: req.params.id}: id muốn xóa
-            .then(() => res.redirect('back')) //xóa xong chuyển lại trang trước đó
+            .then(() => res.redirect('back')) 
             .catch(next)
           break
         default:
@@ -123,12 +127,12 @@ class ProductsController {
       switch(req.body.action){
         case 'resoteAll':
           Product.restore({ _id: { $in: req.body.productIds} }) //{_id: req.params.id}: id muốn xóa
-            .then(() => res.redirect('back')) //xóa xong chuyển lại trang trước đó
+            .then(() => res.redirect('back')) 
             .catch(next)
           break
         case 'deleteForce':
           Product.deleteMany({ _id: { $in: req.body.productIds} }) //{_id: req.params.id}: id muốn xóa
-            .then(() => res.redirect('back')) //xóa xong chuyển lại trang trước đó
+            .then(() => res.redirect('back')) 
             .catch(next)
           // res.json(req.body)
           break
