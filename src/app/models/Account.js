@@ -13,7 +13,7 @@ const AccountSchema = new Schema({
     images: [{ type: String, default: '' }],
     email: { type: String, default: '' },
     address: { type: String, default: '' },
-    phone: {type: Number, default: '' },
+    phone: {type: String, default: '' },
     cart: [{
         product: { type: Schema.Types.ObjectId, ref: 'Product' },
         // quantity: { type: Number},

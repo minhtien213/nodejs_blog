@@ -49,7 +49,7 @@
           <a class="nav-link dropdown-toggle" id="profile" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             {{#if account}}
               {{#if account.images}}
-                <img src="../{{lookup account.images 0}}" style="width: 30px; height: 30px; border-radius: 50%;">
+                <img src="../{{lookup account.images 0}}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
               {{/if}}
               {{account.name}}
             {{else}}

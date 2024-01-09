@@ -32,7 +32,7 @@ class CommentController {
           const productId = req.params.id
           Comment.find({product: productId})
             .populate('account', 'name images')
-            .populate('replys.account', 'name')
+            .populate('replys.account', 'name images')
               .then((comments) =>{
                 res.json(comments)} )
               .catch(next)
