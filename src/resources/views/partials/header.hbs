@@ -36,7 +36,7 @@
     </button>
     
     <div class="input-group mr-4 ml-4">
-      <input id="search-input" type="search" class="form-control rounded" placeholder="search..." aria-label="Search" aria-describedby="search-addon" />
+      <input id="search-input" type="search" class="form-control rounded" placeholder="nhập sản phẩm để tìm kiếm..." aria-label="Search" aria-describedby="search-addon" />
       <button id="search-btn" type="button" class="btn btn-primary ml-2" disabled>Search</button>
       <div class="search_results_block" style="margin-top: 56px ;" >
         {{!-- render result --}}
@@ -63,6 +63,7 @@
               <a class="dropdown-item" href="/me/stored/products">Quản lí sản phẩm</a>
               <hr class="dropdown-divider">
               <a class="dropdown-item" href="/my-account">Tài khoản của tôi</a>
+              <a class="dropdown-item" href="/order/my-orders">Đơn hàng đã mua</a>
               <hr class="dropdown-divider">
               <a class="dropdown-item" href="/auth/logout">Đăng xuất</a>
             {{else}}

@@ -1,0 +1,180 @@
+
+<a href="/cart/{{account._id}}"><i class="fa-solid fa-angles-left"></i> Xem lại giỏ hàng</a>
+<section class="h-100 mt-4 mb-4" style="background-color: #eee;">
+    <div class="container h-100 py-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-normal mb-0 text-black mx-auto">Thông tin đơn hàng</h3>
+        </div>
+        <div class="card rounded-3 mb-2 mt-2">
+            {{#each products}}
+                <div class="card-body p-2 cart_item">
+                    <div class="row d-flex justify-content-between align-items-center">
+                    <div class="col-md-2 col-lg-2 col-xl-2">
+                        <a href="/products/{{this.slug}}"><img
+                            src="../{{lookup this.images 0}}"
+                            class="img-fluid rounded-3">
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-xl-3">
+                        <a class="text-decoration-none" href="/products/{{this.slug}}">
+                            <h3 class="lead fw-normal mb-2 name_product">{{this.name}}</h3>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                        <input data_name = "{{this.name}}" min="1" name="quantity" value="1" type="number"
+                        class="form1 form-control form-control-sm quantity" />
+                    </div>
+                    <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1" style="display: flex;">
+                        <h5 class="mb-0 price" data_name = "{{this.name}}">{{this.price}}</h5><h5>$</h5>
+                    </div>
+                    <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                        <button type="submit" id="remove_cart" disabled data-product-id="{{this._id}}" class="btn text-danger"><i class="fas fa-trash fa-lg remove_cart"></i></button>
+                    </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</section>
+{{!-- discount code --}}
+<div class="card mb-4">
+    <div class="card-body p-4 d-flex flex-row">
+        <div class="form-outline flex-fill">
+        <input id="discount" type="text" class="form-control form-control-lg" placeholder="nhập mã giảm giá của bạn..." />
+        </div>
+        <button type="button" class="btn btn-outline-warning ml-2">Áp dụng</button>
+    </div>
+</div>
+
+
+<h4 class="text-center">Thông tin nhận hàng</h4>
+<div class="row mb-4">
+    <div class="col-12">
+        <form class="row" method="POST" action="/my-account?_method=PUT" style="margin: auto;">
+            <div class="col-4">
+                <!-- Name input -->
+                <div class="form-outline mb-4 mt-4">
+                    <label class="form-label" for="name">Họ và Tên:</label>
+                    <input type="text" id="name" name="name" class="form-control" required value="{{account.name}}" placeholder="nhập tên..."/>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <!-- Phone input -->
+                <div class="form-outline mb-4 mt-4">
+                    <label class="form-label" for="phone">Số điện thoại:</label>
+                    <input type="text" id="phone" name="phone" class="form-control" required value="{{account.phone}}" placeholder="nhập số điện thoại..."/>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <!-- Email input -->
+                <div class="form-outline mb-4 mt-4">
+                    <label class="form-label" for="email">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control" required value="{{account.email}}" placeholder="nhập địa chỉ email..."/>
+                </div>
+            </div>
+            <div class="col-12">
+                <!-- Address input -->
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="address">Địa chỉ nhận hàng:</label>
+                    <input type="text" id="address" name="address" class="form-control" required value="{{account.address}}" placeholder="nhập địa chỉ nhận hàng..."/>
+                </div>
+            </div>
+            <div class="d-flex">
+                <h4>Tổng số tiền thanh toán là:</h4>
+                <h4 class="totalPrice" style="margin-left: 5px;"></h4>
+                <h4>$</h4>
+            </div>
+            <button id="order_completed_btn" type="button" class="btn btn-primary btn-block mt-4">Hoàn tất đơn hàng</button>
+        </form>
+    </div>
+
+</div>
+
+<script>
+
+    //calculatePrice price
+    const priceElements = document.querySelectorAll('.price')
+    priceElements.forEach(function(priceElement) {
+        const price = parseFloat(priceElement.innerText) //lấy từng giá sp
+        const quantityElements = document.querySelectorAll(".form1")
+        quantityElements.forEach(function(quantityElement){
+        quantityElement.addEventListener("change", function(){ //số lượng thay đổi
+            const quantityValue = quantityElement.value //lấy số lượng
+            const data_namePrice = priceElement.getAttribute("data_name")
+            const data_nameQuantity= quantityElement.getAttribute("data_name")
+            if(data_namePrice === data_nameQuantity) {
+                priceElement.innerText = price * quantityValue //tính lại giá từng sp
+            }
+            totalPrice()
+        })
+        })
+    })
+
+    //calculatePrice total price
+    function totalPrice(){
+    const priceElements = document.querySelectorAll('.price')
+        const prices = []
+        priceElements.forEach(priceElement => {
+            const price = parseFloat(priceElement.innerText)
+            prices.push(price)
+            })
+            const result = prices.reduce(function (accu, curr) {
+                return accu + curr;
+            }, 0)
+            const totalPrice = document.querySelector('.totalPrice')
+            totalPrice.innerHTML = `${result}`
+    }
+    totalPrice()
+           
+    document.addEventListener("DOMContentLoaded", function(e) {
+        //click remove_cartsBtn
+        const remove_cartsBtn = document.querySelectorAll('.remove_cart')
+        if(remove_cartsBtn){
+        remove_cartsBtn.forEach(function(remove_cartBtn){
+            remove_cartBtn.addEventListener('click', function (e) {
+                //logic delete
+            })
+        })
+        }
+
+        //click order_completed_btn
+        const order_completed_btn = document.querySelector('#order_completed_btn')
+        order_completed_btn.addEventListener('click', () => {
+            const totalPrice = document.querySelector('.totalPrice').innerText.trim()
+            const discount = document.querySelector('#discount').value.trim() || ''
+            const address = document.querySelector('#address').value.trim()
+            const phone = document.querySelector('#phone').value.trim()
+            const email = document.querySelector('#email').value.trim()
+            const cart_items = document.querySelectorAll('.cart_item')
+            const products = []
+            cart_items.forEach(cart_item => {
+                //const name = cart_item.querySelector('.name_product').innerText.trim()
+                //const price = cart_item.querySelector('.price').innerText.trim()
+                const productId = cart_item.querySelector('#remove_cart').getAttribute('data-product-id').trim()
+                const quantity = cart_item.querySelector('.quantity').value.trim()
+                products.push({ productId, quantity })
+            })
+            //console.log({totalPrice, discount, address, phone, email, products})
+            const data = {
+                totalPrice,
+                discount,
+                address,
+                phone,
+                email,
+                products
+            }
+            fetch('/order/add-order', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                
+            window.location.href = 'http://localhost:3333/order/my-orders'
+        })
+  })
+
+</script>

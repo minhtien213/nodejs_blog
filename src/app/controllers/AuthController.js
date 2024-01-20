@@ -39,7 +39,6 @@ class AuthController {
           res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 9000000 }) //hạn sống token 15p
 
           const previousPath = req.cookies.previousPath || '/' //lấy đường dẫn trước đó trong cookie nếu không có thì chuyển về trang "/" - trang home
-          console.log(previousPath)
           res.clearCookie('previousPath', { path: '/' }) // Xóa cookie sau khi sử dụng
           
           res.redirect(previousPath) //chuyển hướng theo đường dẫn trước(trang yêu cầu phải login)
@@ -58,40 +57,34 @@ class AuthController {
   }
 
   // [POST] /auth/register
-  async registerHandle (req, res, next){
-    try {
-      const username = req.body.username.trim()
-      Account.findOne({username: username})
-        .then(account =>{
-          if(account){
-            res.send("Đã tồn tại Username: " + username)
-          }else{
-            const password = req.body.password.trim()
-            const passwordConfirm = req.body.password_confirm.trim()
-            if(password === passwordConfirm){
-              // Hash mật khẩu trước khi lưu vào cơ sở dữ liệu
-              bcrypt.hash(req.body.password, 10)
-                .then(hashedPassword => {
-                  // Tạo tài khoản mới với mật khẩu đã hash
-                  const account = new Account({
-                    ...req.body,
-                    password: hashedPassword
-                  })
-                  console.log(account)
-                  // Lưu tài khoản vào cơ sở dữ liệu
-                  account.save()
-                  res.redirect('/auth/login')
+  registerHandle (req, res, next){
+    const username = req.body.username.trim()
+    Account.findOne({username: username})
+      .then(account =>{
+        if(account){
+          res.send("Đã tồn tại Username: " + username)
+        }else{
+          const password = req.body.password.trim()
+          const passwordConfirm = req.body.password_confirm.trim()
+          if(password === passwordConfirm){
+            // Hash mật khẩu trước khi lưu vào cơ sở dữ liệu
+            bcrypt.hash(req.body.password, 10)
+              .then(hashedPassword => {
+                // Tạo tài khoản mới với mật khẩu đã hash
+                const account = new Account({
+                  ...req.body,
+                  password: hashedPassword
                 })
-                .catch(next)
-            }else{
-              res.redirect('back')
-            }
-          }
-        })
-      
-    } catch (error) {
-      next(error)
-    }
+                // Lưu tài khoản vào cơ sở dữ liệu
+                account.save()
+                res.redirect('/auth/login')
+              })
+              .catch(next)
+          }else{
+            res.redirect('back')
+        }
+      }
+    })
   }
 
   //[GET] /auth/reset-password

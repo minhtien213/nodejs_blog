@@ -3,26 +3,25 @@
   <section class="h-100 mt-4 mb-4" style="background-color: #eee;">
     <div class="container h-100 py-3">
       <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-10">
+        <div class="col-12">
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="fw-normal mb-0 text-black mx-auto">Giỏ hàng của bạn</h3>
           </div>
           {{#if cartItems.length}}
             {{#each cartItems}}
-              <div class="card rounded-3 mb-4 card_Item" data-cartItem-ids="{{this.product._id}}">
+              <div class="card rounded-3 mb-2 cart_Item" data-cartItem-ids="{{this.product._id}}">
                 <div class="card-body p-4">
                   <div class="row d-flex justify-content-between align-items-center">
                     <div class="col-md-2 col-lg-2 col-xl-2">
                       <a href="/products/{{this.product.slug}}"><img
                         src="{{lookup this.product.images 0}}"
-                        class="img-fluid rounded-3" alt="Cotton T-shirt">
+                        class="img-fluid rounded-3">
                       </a>
                     </div>
                     <div class="col-md-3 col-lg-3 col-xl-3">
                       <a class="text-decoration-none" href="/products/{{this.product.slug}}">
                         <h3 class="lead fw-normal mb-2">{{this.product.name}}</h3>
                       </a>
-                      <p><span class="text-muted">Size: </span>M <span class="text-muted">Color: </span>Grey</p>
                     </div>
                     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1" style="display: flex;">
                       <h5 class="mb-0 price" data_name = "{{this.product.name}}">{{this.product.price}}</h5><h5>$</h5>
@@ -61,14 +60,14 @@
   //Click order button
   const orderBtn = document.querySelector(".order")
   orderBtn.addEventListener("click", function () {
-    const card_Items = document.querySelectorAll('.card_Item')
+    const cart_Items = document.querySelectorAll('.cart_Item')
     const productIdArray = []
-    card_Items.forEach(function (card_Item){
-      const productId = card_Item.getAttribute('data-cartItem-ids')
+    cart_Items.forEach(function (cart_Item){
+      const productId = cart_Item.getAttribute('data-cartItem-ids')
       const productIdArrayFromString = productId.split(',')
       productIdArray.push(...productIdArrayFromString)
     })
-    const url = `/order/orderDetails?productIdArray=${encodeURIComponent(JSON.stringify(productIdArray))}`
+    const url = `/order/order-products?productIdArray=${encodeURIComponent(JSON.stringify(productIdArray))}`
     const addOrderForm = document.querySelector('#add-order-form')
     addOrderForm.action = url
     addOrderForm.submit()

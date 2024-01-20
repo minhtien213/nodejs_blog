@@ -1,0 +1,59 @@
+
+<a href="/"><i class="fa-solid fa-angles-left"></i> Tiếp tục mua sắm</a>
+<section class="h-100 gradient-custom">
+  <div class="container py-2 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-10 col-xl-8">
+        <div class="card" style="border-radius: 10px;">
+          <div class="card-header px-4 py-5">
+            <h5 class="text-muted mb-0">Cảm ơn vì đã mua hàng, <span style="color: #a8729a;">{{account.name}}</span>!</h5>
+          </div>
+          <div class="card-body p-2">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <p class="lead fw-normal mb-0" style="color: #a8729a;">Chi tiết sản phẩm</p>
+              <p class="small text-muted mb-0">Ngày mua : {{orderItem.addedAt}} </p>
+            </div>
+            {{#each orderItem.orderProducts}}
+                <div class="card shadow-0 border mb-2">
+                    <div class="card-body">
+                        <div class="row">
+                        <div class="col-md-3">
+                            <img src="../{{lookup this.productId.images 0}}"
+                            class="img-fluid">
+                        </div>
+                        <div class="col-md-3 text-center d-flex justify-content-center align-items-center">
+                            <p class="text-muted mb-0">{{this.productId.name}}</p>
+                        </div>
+                        <div class="col-md-3 text-center d-flex justify-content-center align-items-center">
+                            <p class="text-muted mb-0 small">Số lượng: {{this.quantity}}</p>
+                        </div>
+                        <div class="col-md-3 text-center d-flex justify-content-center align-items-center">
+                            <p class="text-muted mb-0 small">Giá: {{this.productId.price}}$</p>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+
+            <div class="d-flex justify-content-between pt-2">
+              <p class="lead fw-normal mb-0" style="color: #a8729a;">Chi tiết nhận hàng</p>
+            </div>
+            <div class="d-flex justify-content-between pt-2">
+                <p>Họ và tên: {{account.name}}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+                <p>Số điện thoại: {{orderItem.phone}}</p>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <p>Địa chỉ nhận hàng: {{orderItem.address}}</p>
+            </div>
+          </div>
+          <div class="card-footer border-0 px-4 py-2"
+            style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+            <h5 class="d-flex align-items-center justify-content-end text-white mb-0">Tổng cộng: {{orderItem.totalPrice}}$</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
