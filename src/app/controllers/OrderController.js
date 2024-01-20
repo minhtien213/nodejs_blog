@@ -5,6 +5,7 @@ const checkPermissionMiddlewares = require('../middlewares/checkPermissionMiddle
 const { mongooseToObject, mutipleMongooseToObject } = require('../../util/mongoose')
 const randomstring = require('randomstring')
 const Order = require('../models/Order')
+const Account = require('../models/Account')
 
 class OrderController {
   
@@ -40,14 +41,27 @@ class OrderController {
       })
     }
 
+      
     //[POST] /add-order
-    addOrder(req, res, next) {
+    async addOrder(req, res, next) {
+      const _this = this
       checkPermissionMiddlewares(req, res, [0, 1], (account) => {
         const orderCode = randomstring.generate({
           length: 8,  // Độ dài của mã đơn hàng
           charset: 'alphanumeric'  // Sử dụng các ký tự và số
         }).toUpperCase()
         const data = req.body
+        
+        //xóa product đã mua trong cart
+        data.products.forEach(product => {
+          Account.updateMany(
+            { 'cart.product': product.productId },
+            { $pull: { cart: { product: product.productId } } }
+          )
+          .then(() => console.log(`Đã xóa sản phẩm.`))
+          .catch(error => console.error(`Lỗi khi xóa sản phẩm`))
+        })
+        
         const orderData = {
           ...data,
           orderProducts: data.products,
