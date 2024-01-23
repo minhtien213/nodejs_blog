@@ -172,8 +172,17 @@
                 },
                 body: JSON.stringify(data)
             })
-                
-            window.location.href = 'http://localhost:3333/order/my-orders'
+                .then(response => response.json())
+                .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect // Chuyển hướng theo link server gửi về biến data.redirect
+                } else {
+                    console.error(data.error)
+                }
+                })
+                .catch(error => {
+                console.error('Có lỗi khi thực hiện yêu cầu:', error)
+                })
         })
   })
 

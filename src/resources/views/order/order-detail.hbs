@@ -6,8 +6,11 @@
       <div class="col-lg-10 col-xl-8">
         <div class="card" style="border-radius: 10px;">
           <div class="card-header px-4 py-2">
-            <h5 class="text-muted mb-2">Cảm ơn vì đã mua hàng, <span style="color: #a8729a;">{{account.name}}</span>!</h5>
-            <p>Mã đơn hàng: {{orderItem.orderCode}}</p>
+            <h5 class="text-muted mb-4 mt-2">Cảm ơn vì đã mua hàng, <span style="color: #a8729a;">{{account.name}}</span>!</h5>
+            <div class="d-flex justify-content-between mb-2">
+                <p>Mã đơn hàng: {{orderItem.orderCode}}</p>
+                <p>Trạng thái đơn hàng: {{orderItem.orderStatus}}</p>
+            </div>
           </div>
           <div class="card-body p-2">
             <div class="d-flex justify-content-between align-items-center mb-4">

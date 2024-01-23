@@ -8,9 +8,15 @@
             <h3 class="fw-normal mb-0 text-black mx-auto">Giỏ hàng của bạn</h3>
           </div>
           {{#if cartItems.length}}
+          <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" value="" id="checkbox_all">
+              <label class="form-check-label" for="checkbox_all">
+                Chọn tất cả
+              </label>
+          </div>
             {{#each cartItems}}
-              <div class="card rounded-3 mb-2 cart_Item" data-cartItem-ids="{{this.product._id}}">
-                <div class="card-body p-4">
+              <div class="card rounded-3 mb-2">
+                <div class="card-body p-2">
                   <div class="row d-flex justify-content-between align-items-center">
                     <div class="col-md-2 col-lg-2 col-xl-2">
                       <a href="/products/{{this.product.slug}}"><img
@@ -20,12 +26,17 @@
                     </div>
                     <div class="col-md-3 col-lg-3 col-xl-3">
                       <a class="text-decoration-none" href="/products/{{this.product.slug}}">
-                        <h3 class="lead fw-normal mb-2">{{this.product.name}}</h3>
+                        <h3 class="lead fw-normal">{{this.product.name}}</h3>
                       </a>
                     </div>
                     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1" style="display: flex;">
-                      <h5 class="mb-0 price" data_name = "{{this.product.name}}">{{this.product.price}}</h5><h5>$</h5>
+                      <h5 class="mb-0 price" data_name = "{{this.product.name}}">Giá: {{this.product.price}}</h5><h5>$</h5>
                     </div>
+                    
+                    <div class="">
+                      <input class="form-check-input checkbox_item" type="checkbox" data-product-id="{{this.product._id}}">
+                    </div>
+
                     <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                       <button type="submit" id="remove_cart"  data-product-id="{{this.product._id}}" class="btn text-danger remove_cart"><i class="fas fa-trash fa-lg"></i></button>
                     </div>
@@ -55,27 +66,20 @@
 
 
 <script>
-
-  
-  //Click order button
-  const orderBtn = document.querySelector(".order")
-  orderBtn.addEventListener("click", function () {
-    const cart_Items = document.querySelectorAll('.cart_Item')
-    const productIdArray = []
-    cart_Items.forEach(function (cart_Item){
-      const productId = cart_Item.getAttribute('data-cartItem-ids')
-      const productIdArrayFromString = productId.split(',')
-      productIdArray.push(...productIdArrayFromString)
-    })
-    const url = `/order/order-products?productIdArray=${encodeURIComponent(JSON.stringify(productIdArray))}`
-    const addOrderForm = document.querySelector('#add-order-form')
-    addOrderForm.action = url
-    addOrderForm.submit()
-  })
-    
   document.addEventListener("DOMContentLoaded", function(e) {
-    //click remove_cartsBtn
+    const checkboxAll = document.querySelector('#checkbox_all')
+    const checkboxItems = document.querySelectorAll('.checkbox_item')
     const remove_cartsBtn = document.querySelectorAll('.remove_cart')
+    const orderBtn = document.querySelector(".order")
+
+    if(document.querySelectorAll('.checkbox_item:checked').length == 0){
+      orderBtn.disabled = true
+    }
+    if(checkboxItems.length == 1){
+      document.querySelector('.checkbox_item').style.display = 'none'
+    }
+
+    //click remove_cartsBtn
     if(remove_cartsBtn){
       remove_cartsBtn.forEach(function(remove_cartBtn){
         remove_cartBtn.addEventListener('click', function (e) {
@@ -87,6 +91,49 @@
         })
       })
     }
+
+    //click checkbox_all
+    checkboxAll.addEventListener('change', () => {
+        checkboxItems.forEach(checkboxItem => {
+          checkboxItem.checked = checkboxAll.checked
+          orderBtn.disabled = !checkboxAll.checked
+        })
+    })
+
+    //click checkboxItem
+    if(checkboxItems){
+      checkboxItems.forEach(checkboxItem => {
+        if(checkboxItem){
+          checkboxItem.addEventListener('change', () => {
+            if(document.querySelectorAll('.checkbox_item:checked').length >= checkboxItems.length) {
+              checkboxAll.checked = true
+            }else if(document.querySelectorAll('.checkbox_item:checked').length > 0){
+              orderBtn.disabled = false
+            }
+            else{
+              checkboxAll.checked = false
+              orderBtn.disabled = true
+            }
+          })
+        }
+      })
+    }
+
+    //Click order button
+    orderBtn.addEventListener("click", function () {
+      const productIdArray = []
+      const checkboxItemCheckeds = document.querySelectorAll('.checkbox_item:checked')
+      checkboxItemCheckeds.forEach(function (checkboxItemChecked){
+        const productId = checkboxItemChecked.getAttribute('data-product-id') //chuỗi nhiều productId
+        const productIdArrayFromString = productId.split(',') //tách chuỗi trên thành mảng
+        productIdArray.push(...productIdArrayFromString) //đưa hết mảng đã tách vào mảng productIdArray
+      })
+      const url = `/order/order-products?productIdArray=${encodeURIComponent(JSON.stringify(productIdArray))}`
+      const addOrderForm = document.querySelector('#add-order-form')
+      addOrderForm.action = url
+      addOrderForm.submit()
+    })
+
   })
   
 </script>
